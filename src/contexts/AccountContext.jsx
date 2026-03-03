@@ -1,5 +1,4 @@
 import { createContext, useState, useCallback, useContext } from 'react'
-
 export const AccountContext = createContext()
 
 export function AccountProvider({ children }) {

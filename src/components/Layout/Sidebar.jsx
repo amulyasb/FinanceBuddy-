@@ -1,41 +1,46 @@
 import { NavLink, useNavigate } from 'react-router-dom'
 import { useAuth } from '../../hooks/useAuth'
 import {
-    LayoutDashboard, ArrowLeftRight, BarChart3,
-    FileText, LogOut, Wallet, Package, X
+    LayoutDashboard, ArrowLeftRight, FileText, BarChart3,
+    Tag, Wallet, LogOut, X
 } from 'lucide-react'
+import toast from 'react-hot-toast'
 
 const navItems = [
     { to: '/', label: 'Dashboard', icon: LayoutDashboard },
     { to: '/transactions', label: 'Transactions', icon: ArrowLeftRight },
-    { to: '/categories', label: 'Categories', icon: Package },
-    { to: '/analytics', label: 'Analytics', icon: BarChart3 },
     { to: '/statements', label: 'Statements', icon: FileText },
+    { to: '/analytics', label: 'Analytics', icon: BarChart3 },
+    { to: '/categories', label: 'Categories', icon: Tag },
 ]
 
 export default function Sidebar({ isOpen, onClose }) {
-    const { user, logout } = useAuth()
+    const { user, signOut } = useAuth()
     const navigate = useNavigate()
 
-    const handleSignOut = async () => {
-        await logout()
-        navigate('/auth')
-    }
-
+    const displayName = user?.user_metadata?.full_name || user?.email?.split('@')[0] || 'User'
     const email = user?.email || ''
-    const initials = user?.user_metadata?.full_name
-        ? user.user_metadata.full_name.slice(0, 2).toUpperCase()
-        : email.slice(0, 2).toUpperCase()
-    const displayName = user?.user_metadata?.full_name || email.split('@')[0]
+    const initials = displayName.slice(0, 2).toUpperCase()
+
+    const handleSignOut = async () => {
+        const { error } = await signOut()
+        if (error) {
+            toast.error(error.message)
+        } else {
+            toast.success('Signed out successfully')
+            navigate('/auth')
+        }
+    }
 
     return (
         <>
-            {/* Mobile overlay */}
+            {/* Overlay */}
             {isOpen && (
                 <div
                     onClick={onClose}
                     style={{
-                        position: 'fixed', inset: 0,
+                        position: 'fixed',
+                        inset: 0,
                         background: 'rgba(0,0,0,0.25)',
                         zIndex: 40,
                         backdropFilter: 'blur(2px)',
@@ -43,22 +48,25 @@ export default function Sidebar({ isOpen, onClose }) {
                 />
             )}
 
-            <aside style={{
-                position: 'fixed',
-                top: 0, left: 0,
-                height: '100vh',
-                width: 240,
-                background: '#ffffff',
-                borderRight: '1px solid #e5e7eb',
-                display: 'flex',
-                flexDirection: 'column',
-                zIndex: 50,
-                boxShadow: '2px 0 16px rgba(0,0,0,0.06)',
-                transition: 'transform 0.3s ease',
-            }}
+            {/* Sidebar */}
+            <aside
+                style={{
+                    position: 'fixed',
+                    top: 0,
+                    left: 0,
+                    height: '100vh',
+                    width: 240,
+                    background: '#ffffff',
+                    borderRight: '1px solid #e5e7eb',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    zIndex: 50,
+                    boxShadow: '2px 0 16px rgba(0,0,0,0.06)',
+                    transition: 'transform 0.3s ease',
+                }}
                 className={`sidebar ${isOpen ? 'sidebar-open' : ''}`}
             >
-                {/* Logo */}
+                {/* Header */}
                 <div style={{
                     padding: '22px 20px 18px',
                     borderBottom: '1px solid #f1f5f9',
@@ -68,9 +76,13 @@ export default function Sidebar({ isOpen, onClose }) {
                 }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
                         <div style={{
-                            width: 38, height: 38, borderRadius: 11,
+                            width: 38,
+                            height: 38,
+                            borderRadius: 11,
                             background: 'linear-gradient(135deg, #1e40af, #3b82f6)',
-                            display: 'flex', alignItems: 'center', justifyContent: 'center',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
                             boxShadow: '0 2px 10px rgba(59,130,246,0.3)',
                             flexShrink: 0,
                         }}>
@@ -78,29 +90,35 @@ export default function Sidebar({ isOpen, onClose }) {
                         </div>
                         <div>
                             <div style={{
-                                fontSize: '0.95rem', fontWeight: 800,
-                                color: '#1e293b', lineHeight: 1.1,
+                                fontSize: '0.95rem',
+                                fontWeight: 800,
+                                color: '#1e293b',
+                                lineHeight: 1.1,
                             }}>
                                 FinanceBuddy
                             </div>
                             <div style={{
-                                fontSize: '0.62rem', color: '#94a3b8',
-                                marginTop: 2, letterSpacing: '0.06em',
+                                fontSize: '0.62rem',
+                                color: '#94a3b8',
+                                marginTop: 2,
+                                letterSpacing: '0.06em',
                             }}>
                                 BUSINESS FINANCE
                             </div>
                         </div>
                     </div>
 
-                    {/* Close btn (mobile only) */}
+                    {/* Close button for mobile */}
                     <button
                         onClick={onClose}
                         className="sidebar-close-btn"
                         style={{
                             display: 'none',
                             background: '#f1f5f9',
-                            border: 'none', borderRadius: 8,
-                            padding: 6, cursor: 'pointer',
+                            border: 'none',
+                            borderRadius: 8,
+                            padding: 6,
+                            cursor: 'pointer',
                             color: '#64748b',
                         }}
                     >
@@ -108,20 +126,20 @@ export default function Sidebar({ isOpen, onClose }) {
                     </button>
                 </div>
 
-                {/* Nav Label */}
-                <div style={{
-                    padding: '16px 20px 8px',
-                }}>
+                {/* Navigation Label */}
+                <div style={{ padding: '16px 20px 8px' }}>
                     <span style={{
-                        fontSize: '0.65rem', fontWeight: 700,
-                        color: '#cbd5e1', letterSpacing: '0.1em',
+                        fontSize: '0.65rem',
+                        fontWeight: 700,
+                        color: '#cbd5e1',
+                        letterSpacing: '0.1em',
                         textTransform: 'uppercase',
                     }}>
                         Navigation
                     </span>
                 </div>
 
-                {/* Nav Items */}
+                {/* Navigation Links */}
                 <nav style={{
                     flex: 1,
                     padding: '0 12px',
@@ -130,7 +148,7 @@ export default function Sidebar({ isOpen, onClose }) {
                     gap: 2,
                     overflowY: 'auto',
                 }}>
-                    {navItems.map(({ to, label }) => (
+                    {navItems.map(({ to, label, icon: IconComponent }) => ( // eslint-disable-line no-unused-vars
                         <NavLink
                             key={to}
                             to={to}
@@ -156,54 +174,48 @@ export default function Sidebar({ isOpen, onClose }) {
                                 position: 'relative',
                             })}
                             onMouseEnter={e => {
-                                if (!e.currentTarget.style.background.includes('gradient')) {
+                                if (!e.currentTarget.classList.contains('active')) {
                                     e.currentTarget.style.background = '#f8fafc'
-                                    e.currentTarget.style.color = '#1e293b'
+                                    e.currentTarget.style.borderColor = '#e5e7eb'
                                 }
                             }}
                             onMouseLeave={e => {
-                                if (!e.currentTarget.style.background.includes('gradient')) {
+                                if (!e.currentTarget.classList.contains('active')) {
                                     e.currentTarget.style.background = 'transparent'
-                                    e.currentTarget.style.color = '#64748b'
+                                    e.currentTarget.style.borderColor = 'transparent'
                                 }
                             }}
                         >
-                            {({ isActive }) => {
-                                const item = navItems.find(i => i.to === to);
-                                const IconComponent = item?.icon;
-                                return (
-                                    <>
+                            {({ isActive }) => (
+                                <>
+                                    <IconComponent size={18} style={{ flexShrink: 0 }} />
+                                    {label}
+                                    {isActive && (
                                         <div style={{
-                                            width: 30, height: 30, borderRadius: 8,
-                                            background: isActive ? '#dbeafe' : '#f1f5f9',
-                                            display: 'flex', alignItems: 'center', justifyContent: 'center',
-                                            flexShrink: 0,
-                                            transition: 'background 0.15s',
-                                        }}>
-                                            <IconComponent size={15} color={isActive ? '#1e40af' : '#94a3b8'} />
-                                        </div>
-                                        <span style={{ flex: 1 }}>{label}</span>
-                                        {isActive && (
-                                            <div style={{
-                                                width: 6, height: 6, borderRadius: '50%',
-                                                background: '#3b82f6',
-                                            }} />
-                                        )}
-                                    </>
-                                );
-                            }}
+                                            position: 'absolute',
+                                            right: 8,
+                                            width: 5,
+                                            height: 5,
+                                            borderRadius: '50%',
+                                            background: '#3b82f6',
+                                        }} />
+                                    )}
+                                </>
+                            )}
                         </NavLink>
                     ))}
                 </nav>
 
-                {/* Bottom: User + Signout */}
+                {/* User Section */}
                 <div style={{
                     padding: '14px 12px 18px',
                     borderTop: '1px solid #f1f5f9',
                 }}>
                     {/* User Info */}
                     <div style={{
-                        display: 'flex', alignItems: 'center', gap: 10,
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: 10,
                         padding: '10px 12px',
                         borderRadius: 10,
                         background: '#f8fafc',
@@ -211,10 +223,16 @@ export default function Sidebar({ isOpen, onClose }) {
                         marginBottom: 8,
                     }}>
                         <div style={{
-                            width: 34, height: 34, borderRadius: '50%',
+                            width: 34,
+                            height: 34,
+                            borderRadius: '50%',
                             background: 'linear-gradient(135deg, #1e40af, #3b82f6)',
-                            display: 'flex', alignItems: 'center', justifyContent: 'center',
-                            fontSize: '0.72rem', fontWeight: 800, color: 'white',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            fontSize: '0.72rem',
+                            fontWeight: 800,
+                            color: 'white',
                             flexShrink: 0,
                             boxShadow: '0 2px 6px rgba(59,130,246,0.3)',
                         }}>
@@ -222,34 +240,43 @@ export default function Sidebar({ isOpen, onClose }) {
                         </div>
                         <div style={{ flex: 1, minWidth: 0 }}>
                             <div style={{
-                                fontSize: '0.8rem', fontWeight: 700,
+                                fontSize: '0.8rem',
+                                fontWeight: 700,
                                 color: '#1e293b',
-                                whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis',
+                                whiteSpace: 'nowrap',
+                                overflow: 'hidden',
+                                textOverflow: 'ellipsis',
                             }}>
                                 {displayName}
                             </div>
                             <div style={{
-                                fontSize: '0.65rem', color: '#94a3b8',
-                                whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis',
+                                fontSize: '0.65rem',
+                                color: '#94a3b8',
+                                whiteSpace: 'nowrap',
+                                overflow: 'hidden',
+                                textOverflow: 'ellipsis',
                             }}>
                                 {email}
                             </div>
                         </div>
                     </div>
 
-                    {/* Sign Out */}
+                    {/* Sign Out Button */}
                     <button
                         onClick={handleSignOut}
                         style={{
                             width: '100%',
-                            display: 'flex', alignItems: 'center',
-                            justifyContent: 'center', gap: 8,
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            gap: 8,
                             padding: '9px 14px',
                             borderRadius: 10,
                             border: '1px solid #fecaca',
                             background: '#fff5f5',
                             color: '#ef4444',
-                            fontSize: '0.83rem', fontWeight: 600,
+                            fontSize: '0.83rem',
+                            fontWeight: 600,
                             cursor: 'pointer',
                             transition: 'all 0.15s ease',
                             fontFamily: "'Inter', sans-serif",
@@ -273,11 +300,13 @@ export default function Sidebar({ isOpen, onClose }) {
                 .sidebar {
                     font-family: 'Inter', -apple-system, sans-serif;
                 }
+                
                 @media (min-width: 1024px) {
                     .sidebar {
                         transform: translateX(0) !important;
                     }
                 }
+                
                 @media (max-width: 1023px) {
                     .sidebar {
                         transform: translateX(-100%);
