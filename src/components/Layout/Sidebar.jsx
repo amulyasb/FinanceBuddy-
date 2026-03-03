@@ -1,10 +1,11 @@
-import { NavLink, useNavigate } from 'react-router-dom'
+import { NavLink } from 'react-router-dom'
 import { useAuth } from '../../hooks/useAuth'
 import {
     LayoutDashboard, ArrowLeftRight, FileText, BarChart3,
     Tag, Wallet, LogOut, X
 } from 'lucide-react'
 import toast from 'react-hot-toast'
+import { supabase } from '../../lib/supabase'
 
 const navItems = [
     { to: '/', label: 'Dashboard', icon: LayoutDashboard },
@@ -15,21 +16,17 @@ const navItems = [
 ]
 
 export default function Sidebar({ isOpen, onClose }) {
-    const { user, signOut } = useAuth()
-    const navigate = useNavigate()
+    const { user } = useAuth()
 
     const displayName = user?.user_metadata?.full_name || user?.email?.split('@')[0] || 'User'
     const email = user?.email || ''
     const initials = displayName.slice(0, 2).toUpperCase()
 
+    // ✅ SIMPLE LOGOUT - Just 3 lines!
     const handleSignOut = async () => {
-        const { error } = await signOut()
-        if (error) {
-            toast.error(error.message)
-        } else {
-            toast.success('Signed out successfully')
-            navigate('/auth')
-        }
+        await supabase.auth.signOut()
+        toast.success('Signed out successfully')
+        window.location.href = '/auth' 
     }
 
     return (
@@ -108,7 +105,6 @@ export default function Sidebar({ isOpen, onClose }) {
                         </div>
                     </div>
 
-                    {/* Close button for mobile */}
                     <button
                         onClick={onClose}
                         className="sidebar-close-btn"
@@ -126,7 +122,6 @@ export default function Sidebar({ isOpen, onClose }) {
                     </button>
                 </div>
 
-                {/* Navigation Label */}
                 <div style={{ padding: '16px 20px 8px' }}>
                     <span style={{
                         fontSize: '0.65rem',
@@ -139,7 +134,6 @@ export default function Sidebar({ isOpen, onClose }) {
                     </span>
                 </div>
 
-                {/* Navigation Links */}
                 <nav style={{
                     flex: 1,
                     padding: '0 12px',
@@ -211,7 +205,6 @@ export default function Sidebar({ isOpen, onClose }) {
                     padding: '14px 12px 18px',
                     borderTop: '1px solid #f1f5f9',
                 }}>
-                    {/* User Info */}
                     <div style={{
                         display: 'flex',
                         alignItems: 'center',
