@@ -297,7 +297,7 @@ export default function Dashboard() {
                     {selectedAccount && (
                         <>
                             {/* Stat Cards */}
-                            <div className="stat-grid" style={{
+                        <div className="stat-grid" style={{
                                 display: 'grid',
                                 gridTemplateColumns: 'repeat(4, 1fr)',
                                 gap: 'clamp(12px, 3vw, 16px)',
@@ -311,6 +311,9 @@ export default function Dashboard() {
                                         boxShadow: '0 1px 6px rgba(0,0,0,0.05)',
                                         transition: 'box-shadow 0.2s',
                                         minWidth: 0,
+                                        height: 'clamp(160px, 35vw, 180px)',
+                                        display: 'flex',
+                                        flexDirection: 'column',
                                     }}
                                         onMouseEnter={e => e.currentTarget.style.boxShadow = '0 4px 16px rgba(0,0,0,0.1)'}
                                         onMouseLeave={e => e.currentTarget.style.boxShadow = '0 1px 6px rgba(0,0,0,0.05)'}
@@ -325,6 +328,7 @@ export default function Dashboard() {
                                             alignItems: 'center', 
                                             justifyContent: 'center',
                                             marginBottom: 'clamp(10px, 2.5vw, 14px)',
+                                            flexShrink: 0,
                                         }}>
                                             {card.icon}
                                         </div>
@@ -334,17 +338,25 @@ export default function Dashboard() {
                                             color: '#94a3b8', 
                                             textTransform: 'uppercase',
                                             letterSpacing: '0.07em', 
-                                            marginBottom: 'clamp(4px, 1vw, 6px)',
+                                            marginBottom: 'clamp(6px, 1.5vw, 8px)',
                                             wordBreak: 'break-word',
+                                            flexShrink: 0,
+                                            lineHeight: 1.2,
                                         }}>
                                             {card.label}
                                         </div>
                                         <div style={{
-                                            fontSize: 'clamp(1.1rem, 3vw, 1.35rem)', 
+                                            fontSize: 'clamp(1rem, 2.5vw, 1rem)', 
                                             fontWeight: 800,
                                             color: card.valueColor, 
-                                            marginBottom: 4,
-                                            wordBreak: 'break-word',
+                                            marginBottom: 'clamp(4px, 1vw, 6px)',
+                                            flex: 1,
+                                            display: 'flex',
+                                            alignItems: 'center',
+                                            overflow: 'hidden',
+                                            textOverflow: 'ellipsis',
+                                            whiteSpace: 'nowrap',
+                                            lineHeight: 1.1,
                                         }}>
                                             {card.value}
                                         </div>
@@ -352,13 +364,14 @@ export default function Dashboard() {
                                             fontSize: 'clamp(0.7rem, 1.6vw, 0.75rem)', 
                                             color: '#94a3b8',
                                             wordBreak: 'break-word',
+                                            flexShrink: 0,
+                                            lineHeight: 1.3,
                                         }}>
                                             {card.sub}
                                         </div>
                                     </div>
                                 ))}
-                            </div>
-
+                        </div>
                             {/* Chart + Quick Actions */}
                             <div className="chart-actions-grid" style={{
                                 display: 'grid',
