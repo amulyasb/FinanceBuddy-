@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import { createPortal } from 'react-dom'
 import { useAccounts } from '../../hooks/useAccounts'
 import { useAccount } from '../../hooks/useAccount'
 import AccountForm from './AccountForm'
@@ -48,8 +49,10 @@ export default function AccountSelector() {
         'linear-gradient(135deg, #f59e0b, #d97706)',
     ]
 
+    const hasOpenModal = showForm || Boolean(confirmDelete) || Boolean(showThreshold)
+
     return (
-        <div>
+        <div style={{ position: 'relative', zIndex: hasOpenModal ? 3500 : 'auto' }}>
             {/* Header */}
             <div style={{
                 display: 'flex', alignItems: 'center',
@@ -225,17 +228,18 @@ export default function AccountSelector() {
             </div>
 
             {/* Account Form Modal */}
-            {showForm && (
+            {showForm && createPortal(
                 <AccountForm
                     onClose={() => setShowForm(false)}
                     onSuccess={() => { fetchAccounts(); setShowForm(false) }}
                     existing={editAccount}
                     currentCount={accounts.length}
-                />
+                />,
+                document.body
             )}
 
             {/* Confirm Delete Modal */}
-            {confirmDelete && (
+            {confirmDelete && createPortal(
                 <div style={{
                     position: 'fixed', inset: 0, zIndex: 1000,
                     background: 'rgba(0,0,0,0.35)',
@@ -294,10 +298,10 @@ export default function AccountSelector() {
                         </div>
                     </div>
                 </div>
-            )}
+            , document.body)}
 
             {/* Threshold Modal */}
-            {showThreshold && (
+            {showThreshold && createPortal(
                 <div style={{
                     position: 'fixed', inset: 0, zIndex: 1000,
                     background: 'rgba(0,0,0,0.35)',
@@ -376,7 +380,7 @@ export default function AccountSelector() {
                         </div>
                     </div>
                 </div>
-            )}
+            , document.body)}
 
             <style>{`
                 @keyframes spin { to { transform: rotate(360deg); } }

@@ -6,7 +6,7 @@ import { useAuth } from '../hooks/useAuth'
 import AccountSelector from '../components/Accounts/AccountSelector'
 import { formatCurrency, calcSummary, groupByMonth } from '../lib/utils'
 import {
-    TrendingUp, TrendingDown, DollarSign, Activity,
+    TrendingUp, TrendingDown, Activity,
     AlertTriangle, ArrowUpRight, ArrowDownLeft, Menu,
 } from 'lucide-react'
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts'
@@ -66,15 +66,6 @@ export default function Dashboard() {
 
     const statCards = [
         {
-            label: 'Current Balance',
-            value: formatCurrency(selectedAccount?.current_balance ?? 0),
-            sub: selectedAccount?.account_name ?? '—',
-            icon: <DollarSign size={18} color="#3b82f6" />,
-            iconBg: '#eff6ff',
-            iconBorder: '#bfdbfe',
-            valueColor: '#1e293b',
-        },
-        {
             label: 'Total Income',
             value: formatCurrency(summary.totalCredit),
             sub: 'All credits',
@@ -105,19 +96,12 @@ export default function Dashboard() {
         },
     ]
 
-    const quickActions = [
-        { label: 'Add Transaction', icon: '➕', onClick: () => navigate('/transactions'), primary: true },
-        { label: 'Statement', icon: '📄', onClick: () => navigate('/statements') },
-        { label: 'Analytics', icon: '📊', onClick: () => navigate('/analytics') },
-        { label: 'Categories', icon: '🏷️', onClick: () => navigate('/categories') },
-    ]
-
     return (
-        <div style={{ 
-            maxWidth: 1200, 
-            margin: '0 auto', 
+        <div style={{
+            maxWidth: 1200,
+            margin: '0 auto',
             padding: 'clamp(16px, 4vw, 24px)',
-            fontFamily: "'Inter', sans-serif" 
+            fontFamily: "'Inter', sans-serif"
         }}>
 
             {/* Mobile Account Toggle Button */}
@@ -146,17 +130,17 @@ export default function Dashboard() {
 
             {/* Header */}
             <div style={{ marginBottom: 'clamp(20px, 5vw, 28px)' }}>
-                <h1 style={{ 
-                    fontSize: 'clamp(1.5rem, 4vw, 1.65rem)', 
-                    fontWeight: 800, 
-                    color: '#1e293b', 
+                <h1 style={{
+                    fontSize: 'clamp(1.5rem, 4vw, 1.65rem)',
+                    fontWeight: 800,
+                    color: '#1e293b',
                     marginBottom: '4px',
                     wordBreak: 'break-word',
                 }}>
                     {greeting()}, {displayName} 👋
                 </h1>
-                <p style={{ 
-                    color: '#94a3b8', 
+                <p style={{
+                    color: '#94a3b8',
                     fontSize: 'clamp(0.8rem, 2vw, 0.9rem)',
                     wordBreak: 'break-word',
                 }}>
@@ -172,7 +156,7 @@ export default function Dashboard() {
                 alignItems: 'start',
             }}>
                 {/* Left: Accounts Panel */}
-                <div 
+                <div
                     className={`account-panel ${showAccountPanel ? 'show' : ''}`}
                     style={{
                         background: '#fff',
@@ -203,9 +187,9 @@ export default function Dashboard() {
                 )}
 
                 {/* Right: Main Content */}
-                <div style={{ 
-                    display: 'flex', 
-                    flexDirection: 'column', 
+                <div style={{
+                    display: 'flex',
+                    flexDirection: 'column',
                     gap: 'clamp(16px, 4vw, 24px)',
                     minWidth: 0,
                 }}>
@@ -222,29 +206,29 @@ export default function Dashboard() {
                             gap: 'clamp(10px, 2.5vw, 12px)',
                         }}>
                             <div style={{
-                                width: 'clamp(32px, 7vw, 36px)', 
-                                height: 'clamp(32px, 7vw, 36px)', 
+                                width: 'clamp(32px, 7vw, 36px)',
+                                height: 'clamp(32px, 7vw, 36px)',
                                 borderRadius: '50%',
                                 background: '#fef3c7',
-                                display: 'flex', 
-                                alignItems: 'center', 
+                                display: 'flex',
+                                alignItems: 'center',
                                 justifyContent: 'center',
                                 flexShrink: 0,
                             }}>
                                 <AlertTriangle size={18} color="#f59e0b" />
                             </div>
                             <div style={{ minWidth: 0 }}>
-                                <div style={{ 
-                                    fontWeight: 700, 
-                                    color: '#92400e', 
+                                <div style={{
+                                    fontWeight: 700,
+                                    color: '#92400e',
                                     fontSize: 'clamp(0.8rem, 2vw, 0.875rem)',
                                     wordBreak: 'break-word',
                                 }}>
                                     Balance Alert!
                                 </div>
-                                <div style={{ 
-                                    color: '#b45309', 
-                                    fontSize: 'clamp(0.75rem, 1.8vw, 0.8rem)', 
+                                <div style={{
+                                    color: '#b45309',
+                                    fontSize: 'clamp(0.75rem, 1.8vw, 0.8rem)',
                                     marginTop: 2,
                                     wordBreak: 'break-word',
                                 }}>
@@ -258,34 +242,34 @@ export default function Dashboard() {
                     {/* No Account */}
                     {!selectedAccount && (
                         <div style={{
-                            textAlign: 'center', 
+                            textAlign: 'center',
                             padding: 'clamp(40px, 10vw, 56px)',
                             background: '#fff',
                             borderRadius: 'clamp(14px, 3vw, 16px)',
                             border: '1.5px dashed #e5e7eb',
                         }}>
                             <div style={{
-                                width: 'clamp(48px, 10vw, 56px)', 
-                                height: 'clamp(48px, 10vw, 56px)', 
+                                width: 'clamp(48px, 10vw, 56px)',
+                                height: 'clamp(48px, 10vw, 56px)',
                                 borderRadius: '50%',
                                 background: '#f1f5f9',
-                                display: 'flex', 
-                                alignItems: 'center', 
+                                display: 'flex',
+                                alignItems: 'center',
                                 justifyContent: 'center',
                                 margin: '0 auto 14px',
                             }}>
                                 <Activity size={24} color="#94a3b8" />
                             </div>
-                            <div style={{ 
-                                fontSize: 'clamp(0.9rem, 2.5vw, 1rem)', 
-                                fontWeight: 600, 
-                                color: '#475569' 
+                            <div style={{
+                                fontSize: 'clamp(0.9rem, 2.5vw, 1rem)',
+                                fontWeight: 600,
+                                color: '#475569'
                             }}>
                                 No account selected
                             </div>
-                            <div style={{ 
-                                fontSize: 'clamp(0.75rem, 2vw, 0.85rem)', 
-                                color: '#94a3b8', 
+                            <div style={{
+                                fontSize: 'clamp(0.75rem, 2vw, 0.85rem)',
+                                color: '#94a3b8',
                                 marginTop: 6,
                                 padding: '0 16px',
                             }}>
@@ -297,9 +281,9 @@ export default function Dashboard() {
                     {selectedAccount && (
                         <>
                             {/* Stat Cards */}
-                        <div className="stat-grid" style={{
+                            <div className="stat-grid" style={{
                                 display: 'grid',
-                                gridTemplateColumns: 'repeat(4, 1fr)',
+                                gridTemplateColumns: 'repeat(3, 1fr)',
                                 gap: 'clamp(12px, 3vw, 16px)',
                             }}>
                                 {statCards.map((card) => (
@@ -319,13 +303,13 @@ export default function Dashboard() {
                                         onMouseLeave={e => e.currentTarget.style.boxShadow = '0 1px 6px rgba(0,0,0,0.05)'}
                                     >
                                         <div style={{
-                                            width: 'clamp(34px, 7vw, 38px)', 
-                                            height: 'clamp(34px, 7vw, 38px)', 
+                                            width: 'clamp(34px, 7vw, 38px)',
+                                            height: 'clamp(34px, 7vw, 38px)',
                                             borderRadius: 'clamp(8px, 2vw, 10px)',
                                             background: card.iconBg,
                                             border: `1px solid ${card.iconBorder}`,
-                                            display: 'flex', 
-                                            alignItems: 'center', 
+                                            display: 'flex',
+                                            alignItems: 'center',
                                             justifyContent: 'center',
                                             marginBottom: 'clamp(10px, 2.5vw, 14px)',
                                             flexShrink: 0,
@@ -333,11 +317,11 @@ export default function Dashboard() {
                                             {card.icon}
                                         </div>
                                         <div style={{
-                                            fontSize: 'clamp(0.65rem, 1.5vw, 0.72rem)', 
+                                            fontSize: 'clamp(0.65rem, 1.5vw, 0.72rem)',
                                             fontWeight: 700,
-                                            color: '#94a3b8', 
+                                            color: '#94a3b8',
                                             textTransform: 'uppercase',
-                                            letterSpacing: '0.07em', 
+                                            letterSpacing: '0.07em',
                                             marginBottom: 'clamp(6px, 1.5vw, 8px)',
                                             wordBreak: 'break-word',
                                             flexShrink: 0,
@@ -346,9 +330,9 @@ export default function Dashboard() {
                                             {card.label}
                                         </div>
                                         <div style={{
-                                            fontSize: 'clamp(1rem, 2.5vw, 1rem)', 
+                                            fontSize: 'clamp(1rem, 2.5vw, 1rem)',
                                             fontWeight: 800,
-                                            color: card.valueColor, 
+                                            color: card.valueColor,
                                             marginBottom: 'clamp(4px, 1vw, 6px)',
                                             flex: 1,
                                             display: 'flex',
@@ -360,8 +344,8 @@ export default function Dashboard() {
                                         }}>
                                             {card.value}
                                         </div>
-                                        <div style={{ 
-                                            fontSize: 'clamp(0.7rem, 1.6vw, 0.75rem)', 
+                                        <div style={{
+                                            fontSize: 'clamp(0.7rem, 1.6vw, 0.75rem)',
                                             color: '#94a3b8',
                                             wordBreak: 'break-word',
                                             flexShrink: 0,
@@ -371,16 +355,9 @@ export default function Dashboard() {
                                         </div>
                                     </div>
                                 ))}
-                        </div>
-                            {/* Chart + Quick Actions */}
-                            <div className="chart-actions-grid" style={{
-                                display: 'grid',
-                                gridTemplateColumns: '1fr 180px',
-                                gap: 'clamp(16px, 4vw, 20px)',
-                                alignItems: 'start',
-                            }}>
-                                {/* Monthly Chart */}
-                                <div style={{
+                            </div>
+                            {/* Monthly Chart */}
+                            <div style={{
                                     background: '#fff',
                                     borderRadius: 'clamp(14px, 3vw, 16px)',
                                     padding: 'clamp(16px, 4vw, 20px) clamp(18px, 4.5vw, 24px)',
@@ -389,26 +366,26 @@ export default function Dashboard() {
                                     minWidth: 0,
                                 }}>
                                     <div style={{
-                                        display: 'flex', 
+                                        display: 'flex',
                                         justifyContent: 'space-between',
-                                        alignItems: 'center', 
+                                        alignItems: 'center',
                                         marginBottom: 'clamp(16px, 4vw, 20px)',
                                         gap: '10px',
                                         flexWrap: 'wrap',
                                     }}>
                                         <div style={{ minWidth: 0, flex: '1 1 auto' }}>
-                                            <h3 style={{ 
-                                                fontSize: 'clamp(0.85rem, 2.2vw, 0.95rem)', 
-                                                fontWeight: 700, 
+                                            <h3 style={{
+                                                fontSize: 'clamp(0.85rem, 2.2vw, 0.95rem)',
+                                                fontWeight: 700,
                                                 color: '#1e293b',
                                                 wordBreak: 'break-word',
                                             }}>
                                                 Monthly Overview
                                             </h3>
-                                            <p style={{ 
-                                                fontSize: 'clamp(0.7rem, 1.6vw, 0.75rem)', 
-                                                color: '#94a3b8', 
-                                                marginTop: 2 
+                                            <p style={{
+                                                fontSize: 'clamp(0.7rem, 1.6vw, 0.75rem)',
+                                                color: '#94a3b8',
+                                                marginTop: 2
                                             }}>
                                                 Income vs Expenses
                                             </p>
@@ -416,13 +393,13 @@ export default function Dashboard() {
                                         <button
                                             onClick={() => navigate('/analytics')}
                                             style={{
-                                                fontSize: 'clamp(0.7rem, 1.6vw, 0.75rem)', 
+                                                fontSize: 'clamp(0.7rem, 1.6vw, 0.75rem)',
                                                 color: '#3b82f6',
-                                                background: '#eff6ff', 
+                                                background: '#eff6ff',
                                                 border: '1px solid #bfdbfe',
-                                                borderRadius: '8px', 
+                                                borderRadius: '8px',
                                                 padding: 'clamp(4px, 1vw, 5px) clamp(10px, 2.5vw, 12px)',
-                                                cursor: 'pointer', 
+                                                cursor: 'pointer',
                                                 fontWeight: 600,
                                                 whiteSpace: 'nowrap',
                                             }}
@@ -443,13 +420,13 @@ export default function Dashboard() {
                                         </ResponsiveContainer>
                                     ) : (
                                         <div style={{
-                                            height: 200, 
-                                            display: 'flex', 
+                                            height: 200,
+                                            display: 'flex',
                                             flexDirection: 'column',
-                                            alignItems: 'center', 
+                                            alignItems: 'center',
                                             justifyContent: 'center',
-                                            color: '#94a3b8', 
-                                            fontSize: 'clamp(0.8rem, 2vw, 0.85rem)', 
+                                            color: '#94a3b8',
+                                            fontSize: 'clamp(0.8rem, 2vw, 0.85rem)',
                                             gap: 8,
                                         }}>
                                             <Activity size={28} color="#e5e7eb" />
@@ -457,45 +434,6 @@ export default function Dashboard() {
                                         </div>
                                     )}
                                 </div>
-
-                                {/* Quick Actions */}
-                                <div className="quick-actions-list" style={{ 
-                                    display: 'flex', 
-                                    flexDirection: 'column', 
-                                    gap: 'clamp(8px, 2vw, 10px)' 
-                                }}>
-                                    {quickActions.map(action => (
-                                        <button
-                                            key={action.label}
-                                            onClick={action.onClick}
-                                            style={{
-                                                width: '100%',
-                                                padding: 'clamp(9px, 2.2vw, 11px) clamp(12px, 3vw, 14px)',
-                                                borderRadius: 'clamp(8px, 2vw, 10px)',
-                                                border: action.primary ? 'none' : '1px solid #e5e7eb',
-                                                background: action.primary
-                                                    ? 'linear-gradient(135deg, #1e40af, #3b82f6)'
-                                                    : '#fff',
-                                                color: action.primary ? '#fff' : '#374151',
-                                                fontSize: 'clamp(0.75rem, 1.8vw, 0.82rem)',
-                                                fontWeight: 600,
-                                                cursor: 'pointer',
-                                                display: 'flex',
-                                                alignItems: 'center',
-                                                gap: '8px',
-                                                boxShadow: action.primary
-                                                    ? '0 4px 12px rgba(59,130,246,0.3)'
-                                                    : '0 1px 4px rgba(0,0,0,0.05)',
-                                                transition: 'opacity 0.2s',
-                                            }}
-                                            onMouseEnter={e => e.currentTarget.style.opacity = '0.88'}
-                                            onMouseLeave={e => e.currentTarget.style.opacity = '1'}
-                                        >
-                                            <span>{action.icon}</span> {action.label}
-                                        </button>
-                                    ))}
-                                </div>
-                            </div>
 
                             {/* Recent Transactions */}
                             {transactions.length > 0 && (
@@ -507,16 +445,16 @@ export default function Dashboard() {
                                     boxShadow: '0 1px 6px rgba(0,0,0,0.05)',
                                 }}>
                                     <div style={{
-                                        display: 'flex', 
+                                        display: 'flex',
                                         justifyContent: 'space-between',
-                                        alignItems: 'center', 
+                                        alignItems: 'center',
                                         marginBottom: 'clamp(12px, 3vw, 16px)',
                                         gap: '10px',
                                         flexWrap: 'wrap',
                                     }}>
-                                        <h3 style={{ 
-                                            fontSize: 'clamp(0.85rem, 2.2vw, 0.95rem)', 
-                                            fontWeight: 700, 
+                                        <h3 style={{
+                                            fontSize: 'clamp(0.85rem, 2.2vw, 0.95rem)',
+                                            fontWeight: 700,
                                             color: '#1e293b',
                                             wordBreak: 'break-word',
                                         }}>
@@ -525,13 +463,13 @@ export default function Dashboard() {
                                         <button
                                             onClick={() => navigate('/transactions')}
                                             style={{
-                                                fontSize: 'clamp(0.7rem, 1.6vw, 0.75rem)', 
+                                                fontSize: 'clamp(0.7rem, 1.6vw, 0.75rem)',
                                                 color: '#3b82f6',
-                                                background: '#eff6ff', 
+                                                background: '#eff6ff',
                                                 border: '1px solid #bfdbfe',
-                                                borderRadius: '8px', 
+                                                borderRadius: '8px',
                                                 padding: 'clamp(4px, 1vw, 5px) clamp(10px, 2.5vw, 12px)',
-                                                cursor: 'pointer', 
+                                                cursor: 'pointer',
                                                 fontWeight: 600,
                                                 whiteSpace: 'nowrap',
                                             }}
@@ -539,14 +477,14 @@ export default function Dashboard() {
                                             View All →
                                         </button>
                                     </div>
-                                    <div style={{ 
-                                        display: 'flex', 
-                                        flexDirection: 'column', 
-                                        gap: 'clamp(6px, 1.5vw, 8px)' 
+                                    <div style={{
+                                        display: 'flex',
+                                        flexDirection: 'column',
+                                        gap: 'clamp(6px, 1.5vw, 8px)'
                                     }}>
                                         {[...transactions].reverse().slice(0, 5).map((tx) => (
                                             <div key={tx.id} style={{
-                                                display: 'flex', 
+                                                display: 'flex',
                                                 alignItems: 'center',
                                                 justifyContent: 'space-between',
                                                 padding: 'clamp(10px, 2.5vw, 12px) clamp(12px, 3vw, 14px)',
@@ -559,21 +497,21 @@ export default function Dashboard() {
                                                 onMouseEnter={e => e.currentTarget.style.background = '#f1f5f9'}
                                                 onMouseLeave={e => e.currentTarget.style.background = '#f8fafc'}
                                             >
-                                                <div style={{ 
-                                                    display: 'flex', 
-                                                    alignItems: 'center', 
+                                                <div style={{
+                                                    display: 'flex',
+                                                    alignItems: 'center',
                                                     gap: 'clamp(10px, 2.5vw, 12px)',
                                                     minWidth: 0,
                                                     flex: 1,
                                                 }}>
                                                     <div style={{
-                                                        width: 'clamp(30px, 7vw, 34px)', 
-                                                        height: 'clamp(30px, 7vw, 34px)', 
+                                                        width: 'clamp(30px, 7vw, 34px)',
+                                                        height: 'clamp(30px, 7vw, 34px)',
                                                         borderRadius: 'clamp(7px, 1.8vw, 9px)',
                                                         background: tx.type === 'credit' ? '#f0fdf4' : '#fef2f2',
                                                         border: `1px solid ${tx.type === 'credit' ? '#bbf7d0' : '#fecaca'}`,
-                                                        display: 'flex', 
-                                                        alignItems: 'center', 
+                                                        display: 'flex',
+                                                        alignItems: 'center',
                                                         justifyContent: 'center',
                                                         flexShrink: 0,
                                                     }}>
@@ -583,9 +521,9 @@ export default function Dashboard() {
                                                         }
                                                     </div>
                                                     <div style={{ minWidth: 0 }}>
-                                                        <div style={{ 
-                                                            fontSize: 'clamp(0.8rem, 2vw, 0.85rem)', 
-                                                            color: '#1e293b', 
+                                                        <div style={{
+                                                            fontSize: 'clamp(0.8rem, 2vw, 0.85rem)',
+                                                            color: '#1e293b',
                                                             fontWeight: 600,
                                                             overflow: 'hidden',
                                                             textOverflow: 'ellipsis',
@@ -593,9 +531,9 @@ export default function Dashboard() {
                                                         }}>
                                                             {tx.categories?.name || 'Uncategorized'}
                                                         </div>
-                                                        <div style={{ 
-                                                            fontSize: 'clamp(0.7rem, 1.6vw, 0.73rem)', 
-                                                            color: '#94a3b8', 
+                                                        <div style={{
+                                                            fontSize: 'clamp(0.7rem, 1.6vw, 0.73rem)',
+                                                            color: '#94a3b8',
                                                             marginTop: 1,
                                                             overflow: 'hidden',
                                                             textOverflow: 'ellipsis',
@@ -606,7 +544,7 @@ export default function Dashboard() {
                                                     </div>
                                                 </div>
                                                 <div style={{
-                                                    fontWeight: 700, 
+                                                    fontWeight: 700,
                                                     fontSize: 'clamp(0.8rem, 2vw, 0.875rem)',
                                                     color: tx.type === 'credit' ? '#10b981' : '#ef4444',
                                                     whiteSpace: 'nowrap',
@@ -631,17 +569,6 @@ export default function Dashboard() {
                     }
                     .stat-grid { 
                         grid-template-columns: repeat(2, 1fr) !important; 
-                    }
-                    .chart-actions-grid { 
-                        grid-template-columns: 1fr !important; 
-                    }
-                    .quick-actions-list {
-                        flex-direction: row !important;
-                        flex-wrap: wrap !important;
-                    }
-                    .quick-actions-list > button {
-                        flex: 1 1 calc(50% - 8px) !important;
-                        min-width: 140px !important;
                     }
                 }
                 
@@ -678,12 +605,6 @@ export default function Dashboard() {
                 @media (max-width: 480px) {
                     .stat-grid { 
                         grid-template-columns: 1fr !important; 
-                    }
-                    .quick-actions-list {
-                        flex-direction: column !important;
-                    }
-                    .quick-actions-list > button {
-                        flex: 1 1 100% !important;
                     }
                 }
             `}</style>

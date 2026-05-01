@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useAccounts } from '../../hooks/useAccounts'
 import toast from 'react-hot-toast'
 import { X, Wallet, DollarSign, AlertTriangle } from 'lucide-react'
@@ -29,14 +29,23 @@ export default function AccountForm({ onClose, onSuccess, currentCount }) {
         setLoading(false)
     }
 
+    useEffect(() => {
+        document.body.classList.add('account-modal-open')
+        return () => {
+            document.body.classList.remove('account-modal-open')
+        }
+    }, [])
+
     return (
         <div style={{
-            position: 'fixed', inset: 0, zIndex: 1000,
+            position: 'fixed', inset: 0, zIndex: 2147483647,
             background: 'rgba(0,0,0,0.3)',
             display: 'flex', alignItems: 'center', justifyContent: 'center',
             padding: 16, backdropFilter: 'blur(4px)',
+            isolation: 'isolate',
         }}>
             <div style={{
+                position: 'relative',
                 background: '#fff', borderRadius: 18,
                 padding: 28, width: '100%', maxWidth: 440,
                 boxShadow: '0 24px 64px rgba(0,0,0,0.14)',
@@ -187,7 +196,17 @@ export default function AccountForm({ onClose, onSuccess, currentCount }) {
                     </div>
                 </form>
             </div>
-            <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
+            <style>{`
+                @keyframes spin { to { transform: rotate(360deg); } }
+                body.account-modal-open .recharts-wrapper,
+                body.account-modal-open .recharts-surface,
+                body.account-modal-open .recharts-tooltip-wrapper {
+                    pointer-events: none !important;
+                }
+                body.account-modal-open .recharts-tooltip-wrapper {
+                    display: none !important;
+                }
+            `}</style>
         </div>
     )
 }

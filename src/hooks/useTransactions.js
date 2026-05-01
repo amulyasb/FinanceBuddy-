@@ -41,6 +41,7 @@ export function useTransactions() {
             .eq('account_id', accountId)
             .order('date', { ascending: true })
             .order('created_at', { ascending: true })
+            .limit(1000000)
 
         if (!allTx) return
 
@@ -49,12 +50,24 @@ export function useTransactions() {
             ? recalculated[recalculated.length - 1].running_balance
             : parseFloat(openingBalance)
 
-        // Batch update running balances
-        for (const tx of recalculated) {
-            await supabase
-                .from('transactions')
-                .update({ running_balance: tx.running_balance })
-                .eq('id', tx.id)
+        // Filter only the transactions whose balance actually changed (accounting for float precision)
+        const changedTx = recalculated.filter((tx, i) =>
+            Math.abs((tx.running_balance || 0) - (allTx[i].running_balance || 0)) > 0.001
+        )
+
+        // Bulk update running balances using upsert in chunks of 500
+        if (changedTx.length > 0) {
+            const chunkSize = 500
+            for (let i = 0; i < changedTx.length; i += chunkSize) {
+                const chunk = changedTx.slice(i, i + chunkSize)
+                const { error: upsertError } = await supabase
+                    .from('transactions')
+                    .upsert(chunk)
+
+                if (upsertError) {
+                    console.error("Error bulk updating running balances:", upsertError)
+                }
+            }
         }
 
         // Update account current_balance

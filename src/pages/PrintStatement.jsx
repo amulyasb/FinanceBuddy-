@@ -1,6 +1,6 @@
 import { useRef } from 'react'
 import { formatCurrency, formatDate, calcSummary } from '../lib/utils'
-import { X, Printer, Download } from 'lucide-react'
+import { X, Download } from 'lucide-react'
 import jsPDF from 'jspdf'
 import html2canvas from 'html2canvas'
 
@@ -9,25 +9,40 @@ export default function PrintStatement({ statement, onClose }) {
     const { transactions = [], account, user } = statement
     const summary = calcSummary(transactions)
 
-    const handlePrint = () => window.print()
-
     const handlePDF = async () => {
         const element = printRef.current
         const canvas = await html2canvas(element, {
             scale: 2,
             useCORS: true,
             backgroundColor: '#ffffff',
+            scrollX: 0,
+            scrollY: -window.scrollY,
         })
         const imgData = canvas.toDataURL('image/png')
         const pdf = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' })
-        const pdfWidth = pdf.internal.pageSize.getWidth()
-        const pdfHeight = (canvas.height * pdfWidth) / canvas.width
-        pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight)
+        const pageWidth = pdf.internal.pageSize.getWidth()
+        const pageHeight = pdf.internal.pageSize.getHeight()
+        const margin = 6
+        const imgWidth = pageWidth - margin * 2
+        const imgHeight = (canvas.height * imgWidth) / canvas.width
+
+        let heightLeft = imgHeight
+        let position = margin
+
+        pdf.addImage(imgData, 'PNG', margin, position, imgWidth, imgHeight)
+        heightLeft -= pageHeight
+
+        while (heightLeft > 0) {
+            position = heightLeft - imgHeight + margin
+            pdf.addPage()
+            pdf.addImage(imgData, 'PNG', margin, position, imgWidth, imgHeight)
+            heightLeft -= pageHeight
+        }
         pdf.save(`${statement.statement_number}.pdf`)
     }
 
     return (
-        <div className="modal-overlay no-print" style={{ 
+        <div className="modal-overlay" style={{ 
             alignItems: 'flex-start', 
             padding: 'clamp(12px, 3vw, 20px) clamp(8px, 2vw, 16px)', 
             overflow: 'auto' 
@@ -61,28 +76,6 @@ export default function PrintStatement({ statement, onClose }) {
                         gap: '8px',
                         flexWrap: 'wrap',
                     }}>
-                        <button 
-                            className="btn-secondary" 
-                            onClick={handlePrint} 
-                            style={{ 
-                                fontSize: 'clamp(0.75rem, 1.8vw, 0.8rem)', 
-                                padding: 'clamp(6px, 1.5vw, 8px) clamp(10px, 2.5vw, 14px)',
-                                display: 'flex',
-                                alignItems: 'center',
-                                gap: '6px',
-                                background: '#f8fafc',
-                                border: '1px solid #e2e8f0',
-                                borderRadius: '8px',
-                                color: '#475569',
-                                fontWeight: 600,
-                                cursor: 'pointer',
-                                transition: 'background 0.15s',
-                                whiteSpace: 'nowrap',
-                            }}
-                        >
-                            <Printer size={14} />
-                            <span className="btn-label">Print</span>
-                        </button>
                         <button 
                             className="btn-primary" 
                             onClick={handlePDF} 
@@ -240,10 +233,10 @@ export default function PrintStatement({ statement, onClose }) {
                                 wordBreak: 'break-word',
                             }}>
                                 <span className="date-full">
-                                    {formatDate(statement.start_date)} — {formatDate(statement.end_date)}
+                                    {formatDate(statement.start_date)} - {formatDate(statement.end_date)}
                                 </span>
                                 <span className="date-short" style={{ display: 'none' }}>
-                                    {formatDate(statement.start_date).split(',')[0]} — {formatDate(statement.end_date).split(',')[0]}
+                                    {formatDate(statement.start_date).split(',')[0]} - {formatDate(statement.end_date).split(',')[0]}
                                 </span>
                             </div>
                             <div style={{ 
@@ -283,9 +276,9 @@ export default function PrintStatement({ statement, onClose }) {
                                     textTransform: 'uppercase', 
                                     letterSpacing: '0.05em', 
                                     marginBottom: '4px',
-                                    whiteSpace: 'nowrap',
-                                    overflow: 'hidden',
-                                    textOverflow: 'ellipsis',
+                                    lineHeight: 1.35,
+                                    overflowWrap: 'anywhere',
+                                    wordBreak: 'break-word',
                                 }}>
                                     {item.label}
                                 </div>
@@ -317,65 +310,63 @@ export default function PrintStatement({ statement, onClose }) {
                             <table style={{ 
                                 width: '100%', 
                                 borderCollapse: 'collapse', 
-                                fontSize: 'clamp(0.7rem, 1.6vw, 0.8rem)',
+                                fontSize: 'clamp(0.64rem, 1.45vw, 0.72rem)',
                                 minWidth: '600px',
+                                tableLayout: 'fixed',
                             }}>
                                 <thead>
                                     <tr style={{ background: '#1e40af', color: 'white' }}>
-                                        <th className="hide-mobile" style={{ 
-                                            padding: 'clamp(8px, 2vw, 10px) clamp(8px, 2vw, 12px)', 
-                                            textAlign: 'left', 
-                                            fontWeight: 600,
-                                            fontSize: 'clamp(0.65rem, 1.5vw, 0.75rem)',
-                                        }}>#</th>
                                         <th style={{ 
                                             padding: 'clamp(8px, 2vw, 10px) clamp(8px, 2vw, 12px)', 
                                             textAlign: 'left', 
                                             fontWeight: 600,
-                                            fontSize: 'clamp(0.65rem, 1.5vw, 0.75rem)',
+                                            fontSize: 'clamp(0.6rem, 1.35vw, 0.68rem)',
                                         }}>Date</th>
                                         <th style={{ 
                                             padding: 'clamp(8px, 2vw, 10px) clamp(8px, 2vw, 12px)', 
                                             textAlign: 'left', 
                                             fontWeight: 600,
-                                            fontSize: 'clamp(0.65rem, 1.5vw, 0.75rem)',
+                                            fontSize: 'clamp(0.6rem, 1.35vw, 0.68rem)',
                                         }}>Type</th>
                                         <th className="hide-tablet" style={{ 
                                             padding: 'clamp(8px, 2vw, 10px) clamp(8px, 2vw, 12px)', 
                                             textAlign: 'left', 
                                             fontWeight: 600,
-                                            fontSize: 'clamp(0.65rem, 1.5vw, 0.75rem)',
+                                            fontSize: 'clamp(0.6rem, 1.35vw, 0.68rem)',
                                         }}>Category</th>
                                         <th className="hide-mobile" style={{ 
                                             padding: 'clamp(8px, 2vw, 10px) clamp(8px, 2vw, 12px)', 
                                             textAlign: 'left', 
                                             fontWeight: 600,
-                                            fontSize: 'clamp(0.65rem, 1.5vw, 0.75rem)',
+                                            fontSize: 'clamp(0.6rem, 1.35vw, 0.68rem)',
                                         }}>Remark</th>
                                         <th style={{ 
                                             padding: 'clamp(8px, 2vw, 10px) clamp(8px, 2vw, 12px)', 
                                             textAlign: 'right', 
                                             fontWeight: 600,
-                                            fontSize: 'clamp(0.65rem, 1.5vw, 0.75rem)',
+                                            fontSize: 'clamp(0.6rem, 1.35vw, 0.68rem)',
+                                            width: '15%',
                                         }}>Credit</th>
                                         <th style={{ 
                                             padding: 'clamp(8px, 2vw, 10px) clamp(8px, 2vw, 12px)', 
                                             textAlign: 'right', 
                                             fontWeight: 600,
-                                            fontSize: 'clamp(0.65rem, 1.5vw, 0.75rem)',
+                                            fontSize: 'clamp(0.6rem, 1.35vw, 0.68rem)',
+                                            width: '15%',
                                         }}>Debit</th>
                                         <th style={{ 
                                             padding: 'clamp(8px, 2vw, 10px) clamp(8px, 2vw, 12px)', 
                                             textAlign: 'right', 
                                             fontWeight: 600,
-                                            fontSize: 'clamp(0.65rem, 1.5vw, 0.75rem)',
+                                            fontSize: 'clamp(0.6rem, 1.35vw, 0.68rem)',
+                                            width: '15%',
                                         }}>Balance</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     {transactions.length === 0 && (
                                         <tr>
-                                            <td colSpan={8} style={{ 
+                                            <td colSpan={7} style={{ 
                                                 textAlign: 'center', 
                                                 padding: 'clamp(16px, 4vw, 20px)', 
                                                 color: '#94a3b8',
@@ -387,15 +378,11 @@ export default function PrintStatement({ statement, onClose }) {
                                     )}
                                     {transactions.map((tx, i) => (
                                         <tr key={tx.id} style={{ background: i % 2 === 0 ? '#f8fafc' : '#ffffff' }}>
-                                            <td className="hide-mobile" style={{ 
-                                                padding: 'clamp(7px, 1.8vw, 9px) clamp(8px, 2vw, 12px)', 
-                                                color: '#94a3b8' 
-                                            }}>{i + 1}</td>
                                             <td style={{ 
                                                 padding: 'clamp(7px, 1.8vw, 9px) clamp(8px, 2vw, 12px)', 
                                                 color: '#475569', 
                                                 whiteSpace: 'nowrap',
-                                                fontSize: 'clamp(0.7rem, 1.6vw, 0.78rem)',
+                                                fontSize: 'clamp(0.64rem, 1.45vw, 0.72rem)',
                                             }}>
                                                 <span className="tx-date-full">{formatDate(tx.date)}</span>
                                                 <span className="tx-date-short" style={{ display: 'none' }}>
@@ -418,66 +405,81 @@ export default function PrintStatement({ statement, onClose }) {
                                             <td className="hide-tablet" style={{ 
                                                 padding: 'clamp(7px, 1.8vw, 9px) clamp(8px, 2vw, 12px)', 
                                                 color: '#475569',
-                                                fontSize: 'clamp(0.7rem, 1.6vw, 0.78rem)',
+                                                fontSize: 'clamp(0.64rem, 1.45vw, 0.72rem)',
                                             }}>
-                                                {tx.categories?.name || '—'}
+                                                {tx.categories?.name || '-'}
                                             </td>
                                             <td className="hide-mobile" style={{ 
                                                 padding: 'clamp(7px, 1.8vw, 9px) clamp(8px, 2vw, 12px)', 
                                                 color: '#64748b', 
-                                                maxWidth: '140px',
-                                                fontSize: 'clamp(0.7rem, 1.6vw, 0.78rem)',
+                                                maxWidth: '220px',
+                                                fontSize: 'clamp(0.64rem, 1.45vw, 0.72rem)',
+                                                whiteSpace: 'normal',
+                                                overflowWrap: 'anywhere',
+                                                wordBreak: 'break-word',
+                                                lineHeight: 1.3,
                                             }}>
-                                                <span style={{ 
-                                                    overflow: 'hidden', 
-                                                    textOverflow: 'ellipsis', 
-                                                    whiteSpace: 'nowrap', 
-                                                    display: 'block' 
-                                                }}>
-                                                    {tx.remark || '—'}
-                                                </span>
+                                                {tx.remark || '-'}
                                             </td>
                                             <td style={{ 
                                                 padding: 'clamp(7px, 1.8vw, 9px) clamp(8px, 2vw, 12px)', 
                                                 textAlign: 'right', 
                                                 color: '#059669', 
                                                 fontWeight: 600,
-                                                fontSize: 'clamp(0.7rem, 1.6vw, 0.78rem)',
+                                                fontSize: 'clamp(0.64rem, 1.45vw, 0.72rem)',
+                                                whiteSpace: 'normal',
+                                                overflowWrap: 'anywhere',
+                                                wordBreak: 'break-word',
+                                                lineHeight: 1.25,
                                             }}>
-                                                {tx.type === 'credit' ? formatCurrency(tx.amount) : '—'}
+                                                <span style={{ display: 'inline-block', maxWidth: '100%' }}>
+                                                    {tx.type === 'credit' ? formatCurrency(tx.amount) : ''}
+                                                </span>
                                             </td>
                                             <td style={{ 
                                                 padding: 'clamp(7px, 1.8vw, 9px) clamp(8px, 2vw, 12px)', 
                                                 textAlign: 'right', 
                                                 color: '#dc2626', 
                                                 fontWeight: 600,
-                                                fontSize: 'clamp(0.7rem, 1.6vw, 0.78rem)',
+                                                fontSize: 'clamp(0.64rem, 1.45vw, 0.72rem)',
+                                                whiteSpace: 'normal',
+                                                overflowWrap: 'anywhere',
+                                                wordBreak: 'break-word',
+                                                lineHeight: 1.25,
                                             }}>
-                                                {tx.type === 'debit' ? formatCurrency(tx.amount) : '—'}
+                                                <span style={{ display: 'inline-block', maxWidth: '100%' }}>
+                                                    {tx.type === 'debit' ? formatCurrency(tx.amount) : ''}
+                                                </span>
                                             </td>
                                             <td style={{ 
                                                 padding: 'clamp(7px, 1.8vw, 9px) clamp(8px, 2vw, 12px)', 
                                                 textAlign: 'right', 
                                                 fontWeight: 700, 
                                                 color: '#1e293b',
-                                                fontSize: 'clamp(0.7rem, 1.6vw, 0.78rem)',
+                                                fontSize: 'clamp(0.64rem, 1.45vw, 0.72rem)',
+                                                whiteSpace: 'normal',
+                                                overflowWrap: 'anywhere',
+                                                wordBreak: 'break-word',
+                                                lineHeight: 1.25,
                                             }}>
-                                                {formatCurrency(tx.running_balance)}
+                                                <span style={{ display: 'inline-block', maxWidth: '100%' }}>
+                                                    {formatCurrency(tx.running_balance)}
+                                                </span>
                                             </td>
                                         </tr>
                                     ))}
                                 </tbody>
                                 <tfoot>
                                     <tr style={{ background: '#1e293b', color: 'white' }}>
-                                        <td className="hide-mobile" colSpan={5} style={{ 
+                                        <td className="hide-mobile" colSpan={4} style={{ 
                                             padding: 'clamp(8px, 2vw, 10px) clamp(8px, 2vw, 12px)', 
                                             fontWeight: 600, 
-                                            fontSize: 'clamp(0.7rem, 1.8vw, 0.82rem)' 
+                                            fontSize: 'clamp(0.56rem, 1.3vw, 0.62rem)' 
                                         }}>TOTALS</td>
-                                        <td className="show-mobile" colSpan={3} style={{ 
+                                        <td className="show-mobile" colSpan={2} style={{ 
                                             padding: 'clamp(8px, 2vw, 10px) clamp(8px, 2vw, 12px)', 
                                             fontWeight: 600, 
-                                            fontSize: 'clamp(0.7rem, 1.8vw, 0.82rem)',
+                                            fontSize: 'clamp(0.56rem, 1.3vw, 0.62rem)',
                                             display: 'none',
                                         }}>TOTALS</td>
                                         <td style={{ 
@@ -485,26 +487,44 @@ export default function PrintStatement({ statement, onClose }) {
                                             textAlign: 'right', 
                                             fontWeight: 700, 
                                             color: '#86efac',
-                                            fontSize: 'clamp(0.75rem, 1.8vw, 0.85rem)',
+                                            fontSize: 'clamp(0.58rem, 1.3vw, 0.64rem)',
+                                            whiteSpace: 'normal',
+                                            overflowWrap: 'anywhere',
+                                            wordBreak: 'break-word',
+                                            lineHeight: 1.25,
                                         }}>
-                                            {formatCurrency(summary.totalCredit)}
+                                            <span style={{ display: 'inline-block', maxWidth: '100%' }}>
+                                                {formatCurrency(summary.totalCredit)}
+                                            </span>
                                         </td>
                                         <td style={{ 
                                             padding: 'clamp(8px, 2vw, 10px) clamp(8px, 2vw, 12px)', 
                                             textAlign: 'right', 
                                             fontWeight: 700, 
                                             color: '#fca5a5',
-                                            fontSize: 'clamp(0.75rem, 1.8vw, 0.85rem)',
+                                            fontSize: 'clamp(0.58rem, 1.3vw, 0.64rem)',
+                                            whiteSpace: 'normal',
+                                            overflowWrap: 'anywhere',
+                                            wordBreak: 'break-word',
+                                            lineHeight: 1.25,
                                         }}>
-                                            {formatCurrency(summary.totalDebit)}
+                                            <span style={{ display: 'inline-block', maxWidth: '100%' }}>
+                                                {formatCurrency(summary.totalDebit)}
+                                            </span>
                                         </td>
                                         <td style={{ 
                                             padding: 'clamp(8px, 2vw, 10px) clamp(8px, 2vw, 12px)', 
                                             textAlign: 'right', 
                                             fontWeight: 700,
-                                            fontSize: 'clamp(0.75rem, 1.8vw, 0.85rem)',
+                                            fontSize: 'clamp(0.58rem, 1.3vw, 0.64rem)',
+                                            whiteSpace: 'normal',
+                                            overflowWrap: 'anywhere',
+                                            wordBreak: 'break-word',
+                                            lineHeight: 1.25,
                                         }}>
-                                            {formatCurrency(statement.closing_balance)}
+                                            <span style={{ display: 'inline-block', maxWidth: '100%' }}>
+                                                {formatCurrency(statement.closing_balance)}
+                                            </span>
                                         </td>
                                     </tr>
                                 </tfoot>
@@ -541,7 +561,7 @@ export default function PrintStatement({ statement, onClose }) {
                                 color: '#94a3b8', 
                                 marginTop: '2px' 
                             }}>
-                                Total Credits − Total Debits
+                                Total Credits - Total Debits
                             </div>
                         </div>
                         <div style={{ 
@@ -607,7 +627,7 @@ export default function PrintStatement({ statement, onClose }) {
                         lineHeight: 1.5,
                         padding: '0 16px',
                     }}>
-                        This is a computer-generated statement. No physical signature is required. • FinanceBuddy © {new Date().getFullYear()}
+                        This is a computer-generated statement. No physical signature is required. FinanceBuddy (c) {new Date().getFullYear()}
                     </div>
                 </div>
             </div>
@@ -672,21 +692,8 @@ export default function PrintStatement({ statement, onClose }) {
                         grid-template-columns: 1fr !important;
                     }
                 }
-                
-                @media print {
-                    .no-print {
-                        display: none !important;
-                    }
-                    .print-container {
-                        padding: 20px !important;
-                        border-radius: 0 !important;
-                    }
-                    body {
-                        print-color-adjust: exact;
-                        -webkit-print-color-adjust: exact;
-                    }
-                }
             `}</style>
         </div>
     )
 }
+

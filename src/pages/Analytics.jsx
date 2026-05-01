@@ -8,13 +8,30 @@ import {
     PieChart, Pie, Cell, LineChart, Line, CartesianGrid,
 } from 'recharts'
 import AccountSelector from '../components/Accounts/AccountSelector'
-import { TrendingUp, TrendingDown, Minus, Activity, BarChart3, Menu } from 'lucide-react'
+import { TrendingUp, TrendingDown, Minus, Activity, BarChart3, Menu, Filter, X } from 'lucide-react'
 
 const COLORS = [
     '#3b82f6', '#10b981', '#f59e0b', '#ef4444',
     '#8b5cf6', '#06b6d4', '#f43f5e', '#84cc16',
     '#ec4899', '#14b8a6',
 ]
+
+const getMonthKey = (dateValue) => {
+    try {
+        return format(parseISO(dateValue), 'yyyy-MM')
+    } catch {
+        return String(dateValue || '').slice(0, 7)
+    }
+}
+
+const formatMonthKey = (monthKey, short = false) => {
+    if (!monthKey) return 'Recent month'
+    try {
+        return format(parseISO(`${monthKey}-01`), short ? 'MMM yyyy' : 'MMMM yyyy')
+    } catch {
+        return monthKey
+    }
+}
 
 const CustomTooltip = ({ active, payload, label }) => {
     if (!active || !payload?.length) return null
@@ -86,6 +103,11 @@ export default function Analytics() {
     const { selectedAccount } = useAccount()
     const { transactions, fetchTransactions } = useTransactions()
     const [showAccountPanel, setShowAccountPanel] = useState(false)
+    const [selectedYear, setSelectedYear] = useState('')
+    const [selectedMonthKey, setSelectedMonthKey] = useState('')
+    const [showExpenseFilterModal, setShowExpenseFilterModal] = useState(false)
+    const [draftYear, setDraftYear] = useState('')
+    const [draftMonthKey, setDraftMonthKey] = useState('')
 
     useEffect(() => {
         if (!selectedAccount) return
@@ -97,10 +119,70 @@ export default function Analytics() {
         [transactions]
     )
 
+    const monthOptions = useMemo(() => {
+        return Array.from(
+            new Set(
+                transactions
+                    .filter(t => t.type === 'debit')
+                    .map(t => getMonthKey(t.date))
+                    .filter(Boolean)
+            )
+        )
+            .sort((a, b) => b.localeCompare(a))
+            .map(key => {
+                const [year, month] = key.split('-')
+                return { key, year, month }
+            })
+    }, [transactions])
+
+    const yearOptions = useMemo(() => {
+        return Array.from(new Set(monthOptions.map(m => m.year))).sort((a, b) => b.localeCompare(a))
+    }, [monthOptions])
+
+    const filteredMonthOptions = useMemo(() => {
+        if (!selectedYear) return monthOptions
+        return monthOptions.filter(m => m.year === selectedYear)
+    }, [monthOptions, selectedYear])
+
+    const draftFilteredMonthOptions = useMemo(() => {
+        if (!draftYear) return monthOptions
+        return monthOptions.filter(m => m.year === draftYear)
+    }, [monthOptions, draftYear])
+
+    useEffect(() => {
+        if (!selectedMonthKey) return
+        if (!filteredMonthOptions.some(m => m.key === selectedMonthKey)) {
+            setSelectedMonthKey('')
+        }
+    }, [filteredMonthOptions, selectedMonthKey])
+
+    useEffect(() => {
+        if (!draftMonthKey) return
+        if (!draftFilteredMonthOptions.some(m => m.key === draftMonthKey)) {
+            setDraftMonthKey('')
+        }
+    }, [draftFilteredMonthOptions, draftMonthKey])
+
+    const effectiveMonthKey = selectedMonthKey || filteredMonthOptions[0]?.key || ''
+    const selectedPeriodLabel = formatMonthKey(effectiveMonthKey)
+
+    const openExpenseFilterModal = () => {
+        setDraftYear(selectedYear)
+        setDraftMonthKey(selectedMonthKey)
+        setShowExpenseFilterModal(true)
+    }
+
+    const applyExpenseFilter = () => {
+        setSelectedYear(draftYear)
+        setSelectedMonthKey(draftMonthKey)
+        setShowExpenseFilterModal(false)
+    }
+
     const expensePie = useMemo(() => {
         const catMap = {}
         transactions
             .filter(t => t.type === 'debit')
+            .filter(t => !effectiveMonthKey || getMonthKey(t.date) === effectiveMonthKey)
             .forEach(t => {
                 const name = t.categories?.name || 'Uncategorized'
                 catMap[name] = (catMap[name] || 0) + parseFloat(t.amount)
@@ -109,7 +191,7 @@ export default function Analytics() {
             name,
             value: parseFloat(value.toFixed(2)),
         }))
-    }, [transactions])
+    }, [transactions, effectiveMonthKey])
 
     const lineData = useMemo(
         () => transactions.map(tx => ({ date: tx.date, balance: tx.running_balance })),
@@ -404,22 +486,51 @@ export default function Analytics() {
                                     boxShadow: '0 1px 6px rgba(0,0,0,0.05)',
                                     minWidth: 0,
                                 }}>
-                                    <div style={{ marginBottom: 'clamp(12px, 3vw, 16px)' }}>
-                                        <h3 style={{ 
-                                            fontSize: 'clamp(0.85rem, 2.2vw, 0.95rem)', 
-                                            fontWeight: 700, 
-                                            color: '#1e293b',
-                                            wordBreak: 'break-word',
-                                        }}>
-                                            Expense Breakdown
-                                        </h3>
-                                        <p style={{ 
-                                            fontSize: 'clamp(0.7rem, 1.6vw, 0.75rem)', 
-                                            color: '#94a3b8', 
-                                            marginTop: '3px' 
-                                        }}>
-                                            By category
-                                        </p>
+                                    <div style={{
+                                        marginBottom: 'clamp(12px, 3vw, 16px)',
+                                        display: 'flex',
+                                        alignItems: 'flex-start',
+                                        justifyContent: 'space-between',
+                                        gap: '10px',
+                                        flexWrap: 'wrap',
+                                    }}>
+                                        <div>
+                                            <h3 style={{ 
+                                                fontSize: 'clamp(0.85rem, 2.2vw, 0.95rem)', 
+                                                fontWeight: 700, 
+                                                color: '#1e293b',
+                                                wordBreak: 'break-word',
+                                            }}>
+                                                Expense Breakdown
+                                            </h3>
+                                            <p style={{ 
+                                                fontSize: 'clamp(0.7rem, 1.6vw, 0.75rem)', 
+                                                color: '#94a3b8', 
+                                                marginTop: '3px' 
+                                            }}>
+                                                By category • {selectedPeriodLabel}
+                                            </p>
+                                        </div>
+
+                                        <button
+                                            onClick={openExpenseFilterModal}
+                                            style={{
+                                                display: 'inline-flex',
+                                                alignItems: 'center',
+                                                gap: '6px',
+                                                border: '1px solid #dbeafe',
+                                                background: '#eff6ff',
+                                                color: '#1e40af',
+                                                borderRadius: '9px',
+                                                padding: '6px 10px',
+                                                fontSize: 'clamp(0.68rem, 1.6vw, 0.74rem)',
+                                                fontWeight: 600,
+                                                cursor: 'pointer',
+                                            }}
+                                        >
+                                            <Filter size={14} />
+                                            Filter
+                                        </button>
                                     </div>
 
                                     {expensePie.length > 0 ? (
@@ -505,7 +616,7 @@ export default function Analytics() {
                                             gap: '8px',
                                         }}>
                                             <Activity size={28} color="#e5e7eb" />
-                                            No expenses recorded
+                                            No expenses recorded for {selectedPeriodLabel}
                                         </div>
                                     )}
                                 </div>
@@ -577,6 +688,170 @@ export default function Analytics() {
                     )}
                 </div>
             </div>
+
+            {showExpenseFilterModal && (
+                <div style={{
+                    position: 'fixed',
+                    inset: 0,
+                    zIndex: 1100,
+                    background: 'rgba(0,0,0,0.35)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    padding: '16px',
+                    backdropFilter: 'blur(4px)',
+                }}>
+                    <div style={{
+                        background: '#fff',
+                        borderRadius: '16px',
+                        border: '1px solid #e5e7eb',
+                        boxShadow: '0 24px 64px rgba(0,0,0,0.14)',
+                        width: '100%',
+                        maxWidth: '520px',
+                        padding: '20px',
+                        maxHeight: '85vh',
+                        overflowY: 'auto',
+                    }}>
+                        <div style={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'space-between',
+                            gap: '12px',
+                            marginBottom: '14px',
+                        }}>
+                            <div>
+                                <h3 style={{ fontSize: '1rem', fontWeight: 800, color: '#1e293b' }}>
+                                    Filter Expense Breakdown
+                                </h3>
+                                <p style={{ fontSize: '0.78rem', color: '#94a3b8', marginTop: '2px' }}>
+                                    Select year and month
+                                </p>
+                            </div>
+                            <button
+                                onClick={() => setShowExpenseFilterModal(false)}
+                                style={{
+                                    background: '#f1f5f9',
+                                    border: '1px solid #e5e7eb',
+                                    borderRadius: '9px',
+                                    cursor: 'pointer',
+                                    color: '#64748b',
+                                    padding: '6px',
+                                    display: 'flex',
+                                }}
+                            >
+                                <X size={16} />
+                            </button>
+                        </div>
+
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
+                            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
+                                <button
+                                    onClick={() => {
+                                        setDraftYear('')
+                                        setDraftMonthKey('')
+                                    }}
+                                    style={{
+                                        border: !draftYear ? '1px solid #93c5fd' : '1px solid #e5e7eb',
+                                        background: !draftYear ? '#eff6ff' : '#fff',
+                                        color: !draftYear ? '#1e40af' : '#64748b',
+                                        borderRadius: '999px',
+                                        padding: '5px 10px',
+                                        fontSize: '0.75rem',
+                                        fontWeight: 600,
+                                        cursor: 'pointer',
+                                    }}
+                                >
+                                    Recent
+                                </button>
+                                {yearOptions.map(year => (
+                                    <button
+                                        key={year}
+                                        onClick={() => {
+                                            setDraftYear(year)
+                                            setDraftMonthKey('')
+                                        }}
+                                        style={{
+                                            border: draftYear === year ? '1px solid #93c5fd' : '1px solid #e5e7eb',
+                                            background: draftYear === year ? '#eff6ff' : '#fff',
+                                            color: draftYear === year ? '#1e40af' : '#64748b',
+                                            borderRadius: '999px',
+                                            padding: '5px 10px',
+                                            fontSize: '0.75rem',
+                                            fontWeight: 600,
+                                            cursor: 'pointer',
+                                        }}
+                                    >
+                                        {year}
+                                    </button>
+                                ))}
+                            </div>
+
+                            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
+                                {draftFilteredMonthOptions.map(option => (
+                                    <button
+                                        key={option.key}
+                                        onClick={() => {
+                                            setDraftYear(option.year)
+                                            setDraftMonthKey(option.key)
+                                        }}
+                                        style={{
+                                            border: draftMonthKey === option.key ? '1px solid #93c5fd' : '1px solid #e5e7eb',
+                                            background: draftMonthKey === option.key ? '#eff6ff' : '#fff',
+                                            color: draftMonthKey === option.key ? '#1e40af' : '#64748b',
+                                            borderRadius: '999px',
+                                            padding: '5px 10px',
+                                            fontSize: '0.75rem',
+                                            fontWeight: 600,
+                                            cursor: 'pointer',
+                                            whiteSpace: 'nowrap',
+                                        }}
+                                    >
+                                        {formatMonthKey(option.key, true)}
+                                    </button>
+                                ))}
+                            </div>
+
+                            <div style={{
+                                display: 'flex',
+                                justifyContent: 'flex-end',
+                                gap: '8px',
+                                marginTop: '4px',
+                            }}>
+                                <button
+                                    onClick={() => setShowExpenseFilterModal(false)}
+                                    style={{
+                                        border: '1px solid #e5e7eb',
+                                        background: '#fff',
+                                        color: '#374151',
+                                        borderRadius: '9px',
+                                        padding: '8px 14px',
+                                        fontSize: '0.8rem',
+                                        fontWeight: 600,
+                                        cursor: 'pointer',
+                                    }}
+                                >
+                                    Cancel
+                                </button>
+                                <button
+                                    onClick={applyExpenseFilter}
+                                    style={{
+                                        border: 'none',
+                                        background: 'linear-gradient(135deg, #1e40af, #3b82f6)',
+                                        color: '#fff',
+                                        borderRadius: '9px',
+                                        padding: '8px 14px',
+                                        fontSize: '0.8rem',
+                                        fontWeight: 600,
+                                        cursor: 'pointer',
+                                    }}
+                                >
+                                    Apply
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            )}
 
             <style>{`
                 @media (max-width: 1024px) {
