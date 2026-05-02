@@ -37,17 +37,17 @@ const CustomTooltip = ({ active, payload, label }) => {
     if (!active || !payload?.length) return null
     return (
         <div style={{
-            background: '#fff', 
+            background: '#fff',
             border: '1px solid #e5e7eb',
-            borderRadius: 'clamp(8px, 2vw, 10px)', 
+            borderRadius: 'clamp(8px, 2vw, 10px)',
             padding: 'clamp(8px, 2vw, 10px) clamp(10px, 2.5vw, 14px)',
-            fontSize: 'clamp(0.7rem, 1.8vw, 0.8rem)', 
+            fontSize: 'clamp(0.7rem, 1.8vw, 0.8rem)',
             boxShadow: '0 4px 16px rgba(0,0,0,0.08)',
         }}>
             {label && (
-                <div style={{ 
-                    color: '#94a3b8', 
-                    marginBottom: '6px', 
+                <div style={{
+                    color: '#94a3b8',
+                    marginBottom: '6px',
                     fontWeight: 600,
                     fontSize: 'clamp(0.7rem, 1.6vw, 0.78rem)',
                 }}>
@@ -55,8 +55,8 @@ const CustomTooltip = ({ active, payload, label }) => {
                 </div>
             )}
             {payload.map(p => (
-                <div key={p.dataKey || p.name} style={{ 
-                    color: p.color, 
+                <div key={p.dataKey || p.name} style={{
+                    color: p.color,
                     fontWeight: 700,
                     fontSize: 'clamp(0.75rem, 1.8vw, 0.82rem)',
                 }}>
@@ -71,25 +71,25 @@ const PieTooltip = ({ active, payload }) => {
     if (!active || !payload?.length) return null
     return (
         <div style={{
-            background: '#fff', 
+            background: '#fff',
             border: '1px solid #e5e7eb',
-            borderRadius: 'clamp(8px, 2vw, 10px)', 
+            borderRadius: 'clamp(8px, 2vw, 10px)',
             padding: 'clamp(8px, 2vw, 10px) clamp(10px, 2.5vw, 14px)',
-            fontSize: 'clamp(0.7rem, 1.8vw, 0.8rem)', 
+            fontSize: 'clamp(0.7rem, 1.8vw, 0.8rem)',
             boxShadow: '0 4px 16px rgba(0,0,0,0.08)',
             maxWidth: '200px',
         }}>
-            <div style={{ 
-                color: '#1e293b', 
-                fontWeight: 700, 
+            <div style={{
+                color: '#1e293b',
+                fontWeight: 700,
                 marginBottom: '2px',
                 fontSize: 'clamp(0.75rem, 1.8vw, 0.82rem)',
                 wordBreak: 'break-word',
             }}>
                 {payload[0].payload.name}
             </div>
-            <div style={{ 
-                color: '#ef4444', 
+            <div style={{
+                color: '#ef4444',
                 fontWeight: 600,
                 fontSize: 'clamp(0.75rem, 1.8vw, 0.8rem)',
             }}>
@@ -200,7 +200,7 @@ export default function Analytics() {
 
     return (
         <div style={{
-            maxWidth: 1200, 
+            maxWidth: 1200,
             margin: '0 auto',
             padding: 'clamp(16px, 4vw, 24px)',
             fontFamily: "'Inter', -apple-system, sans-serif",
@@ -231,17 +231,17 @@ export default function Analytics() {
 
             {/* Header */}
             <div style={{ marginBottom: 'clamp(20px, 5vw, 28px)' }}>
-                <h1 style={{ 
-                    fontSize: 'clamp(1.5rem, 4vw, 1.65rem)', 
-                    fontWeight: 800, 
-                    color: '#1e293b', 
+                <h1 style={{
+                    fontSize: 'clamp(1.5rem, 4vw, 1.65rem)',
+                    fontWeight: 800,
+                    color: '#1e293b',
                     marginBottom: '4px',
                     wordBreak: 'break-word',
                 }}>
                     Analytics
                 </h1>
-                <p style={{ 
-                    color: '#94a3b8', 
+                <p style={{
+                    color: '#94a3b8',
                     fontSize: 'clamp(0.8rem, 2vw, 0.9rem)',
                     wordBreak: 'break-word',
                 }}>
@@ -252,19 +252,19 @@ export default function Analytics() {
             <div className="analytics-layout" style={{
                 display: 'grid',
                 gridTemplateColumns: '280px 1fr',
-                gap: 'clamp(16px, 4vw, 24px)', 
+                gap: 'clamp(16px, 4vw, 24px)',
                 alignItems: 'start',
             }}>
                 {/* Account Selector Panel */}
                 <div
                     className={`account-panel ${showAccountPanel ? 'show' : ''}`}
                     style={{
-                        background: '#fff', 
+                        background: '#fff',
                         borderRadius: '16px',
-                        padding: 'clamp(16px, 4vw, 20px)', 
+                        padding: 'clamp(16px, 4vw, 20px)',
                         border: '1px solid #e5e7eb',
                         boxShadow: '0 1px 8px rgba(0,0,0,0.06)',
-                        position: 'sticky', 
+                        position: 'sticky',
                         top: '24px',
                     }}
                 >
@@ -287,9 +287,9 @@ export default function Analytics() {
                 )}
 
                 {/* Charts Panel */}
-                <div style={{ 
-                    display: 'flex', 
-                    flexDirection: 'column', 
+                <div style={{
+                    display: 'flex',
+                    flexDirection: 'column',
                     gap: 'clamp(14px, 3.5vw, 20px)',
                     minWidth: 0,
                 }}>
@@ -297,35 +297,35 @@ export default function Analytics() {
                     {/* No account selected */}
                     {!selectedAccount && (
                         <div style={{
-                            textAlign: 'center', 
+                            textAlign: 'center',
                             padding: 'clamp(40px, 10vw, 56px) clamp(16px, 4vw, 24px)',
-                            background: '#fff', 
+                            background: '#fff',
                             borderRadius: 'clamp(14px, 3vw, 16px)',
                             border: '1.5px dashed #e5e7eb',
                         }}>
                             <div style={{
-                                width: 'clamp(48px, 10vw, 56px)', 
-                                height: 'clamp(48px, 10vw, 56px)', 
+                                width: 'clamp(48px, 10vw, 56px)',
+                                height: 'clamp(48px, 10vw, 56px)',
                                 borderRadius: '50%',
                                 background: '#f1f5f9',
-                                display: 'flex', 
-                                alignItems: 'center', 
+                                display: 'flex',
+                                alignItems: 'center',
                                 justifyContent: 'center',
                                 margin: '0 auto 14px',
                             }}>
                                 <BarChart3 size={24} color="#94a3b8" />
                             </div>
-                            <div style={{ 
-                                fontSize: 'clamp(0.9rem, 2.5vw, 1rem)', 
-                                fontWeight: 600, 
-                                color: '#475569' 
+                            <div style={{
+                                fontSize: 'clamp(0.9rem, 2.5vw, 1rem)',
+                                fontWeight: 600,
+                                color: '#475569'
                             }}>
                                 No account selected
                             </div>
-                            <div style={{ 
-                                fontSize: 'clamp(0.75rem, 2vw, 0.85rem)', 
-                                color: '#94a3b8', 
-                                marginTop: '6px' 
+                            <div style={{
+                                fontSize: 'clamp(0.75rem, 2vw, 0.85rem)',
+                                color: '#94a3b8',
+                                marginTop: '6px'
                             }}>
                                 Select an account to view analytics
                             </div>
@@ -335,35 +335,35 @@ export default function Analytics() {
                     {/* No transactions */}
                     {selectedAccount && transactions.length === 0 && (
                         <div style={{
-                            textAlign: 'center', 
+                            textAlign: 'center',
                             padding: 'clamp(40px, 10vw, 56px) clamp(16px, 4vw, 24px)',
-                            background: '#fff', 
+                            background: '#fff',
                             borderRadius: 'clamp(14px, 3vw, 16px)',
                             border: '1.5px dashed #e5e7eb',
                         }}>
                             <div style={{
-                                width: 'clamp(48px, 10vw, 56px)', 
-                                height: 'clamp(48px, 10vw, 56px)', 
+                                width: 'clamp(48px, 10vw, 56px)',
+                                height: 'clamp(48px, 10vw, 56px)',
                                 borderRadius: '50%',
                                 background: '#f1f5f9',
-                                display: 'flex', 
-                                alignItems: 'center', 
+                                display: 'flex',
+                                alignItems: 'center',
                                 justifyContent: 'center',
                                 margin: '0 auto 14px',
                             }}>
                                 <Activity size={24} color="#94a3b8" />
                             </div>
-                            <div style={{ 
-                                fontSize: 'clamp(0.9rem, 2.5vw, 1rem)', 
-                                fontWeight: 600, 
-                                color: '#475569' 
+                            <div style={{
+                                fontSize: 'clamp(0.9rem, 2.5vw, 1rem)',
+                                fontWeight: 600,
+                                color: '#475569'
                             }}>
                                 No transactions yet
                             </div>
-                            <div style={{ 
-                                fontSize: 'clamp(0.75rem, 2vw, 0.85rem)', 
-                                color: '#94a3b8', 
-                                marginTop: '6px' 
+                            <div style={{
+                                fontSize: 'clamp(0.75rem, 2vw, 0.85rem)',
+                                color: '#94a3b8',
+                                marginTop: '6px'
                             }}>
                                 Add transactions to see analytics
                             </div>
@@ -374,25 +374,25 @@ export default function Analytics() {
                         <>
                             {/* Monthly Bar Chart */}
                             <div style={{
-                                background: '#fff', 
+                                background: '#fff',
                                 borderRadius: 'clamp(14px, 3vw, 16px)',
                                 padding: 'clamp(18px, 4vw, 22px) clamp(20px, 4vw, 24px)',
                                 border: '1px solid #e5e7eb',
                                 boxShadow: '0 1px 6px rgba(0,0,0,0.05)',
                             }}>
                                 <div style={{ marginBottom: 'clamp(16px, 4vw, 20px)' }}>
-                                    <h3 style={{ 
-                                        fontSize: 'clamp(0.85rem, 2.2vw, 0.95rem)', 
-                                        fontWeight: 700, 
+                                    <h3 style={{
+                                        fontSize: 'clamp(0.85rem, 2.2vw, 0.95rem)',
+                                        fontWeight: 700,
                                         color: '#1e293b',
                                         wordBreak: 'break-word',
                                     }}>
                                         Monthly Income vs Expenses
                                     </h3>
-                                    <p style={{ 
-                                        fontSize: 'clamp(0.7rem, 1.6vw, 0.75rem)', 
-                                        color: '#94a3b8', 
-                                        marginTop: '3px' 
+                                    <p style={{
+                                        fontSize: 'clamp(0.7rem, 1.6vw, 0.75rem)',
+                                        color: '#94a3b8',
+                                        marginTop: '3px'
                                     }}>
                                         <span className="chart-subtitle-full">Last 12 months overview</span>
                                         <span className="chart-subtitle-short" style={{ display: 'none' }}>
@@ -408,22 +408,22 @@ export default function Analytics() {
                                                 <XAxis
                                                     dataKey="month"
                                                     tick={{ fill: '#94a3b8', fontSize: 11 }}
-                                                    axisLine={false} 
+                                                    axisLine={false}
                                                     tickLine={false}
                                                 />
                                                 <YAxis
                                                     tick={{ fill: '#94a3b8', fontSize: 11 }}
-                                                    axisLine={false} 
+                                                    axisLine={false}
                                                     tickLine={false}
                                                     tickFormatter={v => `${(v / 1000).toFixed(0)}k`}
                                                 />
                                                 <Tooltip content={<CustomTooltip />} cursor={{ fill: 'rgba(0,0,0,0.03)' }} />
-                                                <Legend 
-                                                    wrapperStyle={{ 
-                                                        color: '#64748b', 
-                                                        fontSize: 'clamp(0.7rem, 1.6vw, 0.8rem)', 
-                                                        paddingTop: 12 
-                                                    }} 
+                                                <Legend
+                                                    wrapperStyle={{
+                                                        color: '#64748b',
+                                                        fontSize: 'clamp(0.7rem, 1.6vw, 0.8rem)',
+                                                        paddingTop: 12
+                                                    }}
                                                 />
                                                 <Bar dataKey="credit" name="Income" fill="#10b981" radius={[4, 4, 0, 0]} />
                                                 <Bar dataKey="debit" name="Expenses" fill="#ef4444" radius={[4, 4, 0, 0]} />
@@ -433,22 +433,22 @@ export default function Analytics() {
                                 </div>
 
                                 {/* Monthly P&L badges */}
-                                <div style={{ 
-                                    display: 'flex', 
-                                    flexWrap: 'wrap', 
-                                    gap: 'clamp(6px, 1.5vw, 8px)', 
+                                <div style={{
+                                    display: 'flex',
+                                    flexWrap: 'wrap',
+                                    gap: 'clamp(6px, 1.5vw, 8px)',
                                     marginTop: 'clamp(12px, 3vw, 16px)',
                                 }}>
                                     {monthlyData.map(m => {
                                         const profit = m.credit - m.debit
                                         return (
                                             <div key={m.month} style={{
-                                                display: 'inline-flex', 
-                                                alignItems: 'center', 
+                                                display: 'inline-flex',
+                                                alignItems: 'center',
                                                 gap: '5px',
-                                                padding: 'clamp(3px, 1vw, 4px) clamp(8px, 2vw, 10px)', 
+                                                padding: 'clamp(3px, 1vw, 4px) clamp(8px, 2vw, 10px)',
                                                 borderRadius: '20px',
-                                                fontSize: 'clamp(0.65rem, 1.5vw, 0.72rem)', 
+                                                fontSize: 'clamp(0.65rem, 1.5vw, 0.72rem)',
                                                 fontWeight: 600,
                                                 background: profit > 0 ? '#f0fdf4' : profit < 0 ? '#fef2f2' : '#f8fafc',
                                                 border: `1px solid ${profit > 0 ? '#bbf7d0' : profit < 0 ? '#fecaca' : '#e5e7eb'}`,
@@ -479,7 +479,7 @@ export default function Analytics() {
                             }}>
                                 {/* Expense Breakdown Pie */}
                                 <div style={{
-                                    background: '#fff', 
+                                    background: '#fff',
                                     borderRadius: 'clamp(14px, 3vw, 16px)',
                                     padding: 'clamp(18px, 4vw, 22px) clamp(20px, 4vw, 24px)',
                                     border: '1px solid #e5e7eb',
@@ -495,18 +495,18 @@ export default function Analytics() {
                                         flexWrap: 'wrap',
                                     }}>
                                         <div>
-                                            <h3 style={{ 
-                                                fontSize: 'clamp(0.85rem, 2.2vw, 0.95rem)', 
-                                                fontWeight: 700, 
+                                            <h3 style={{
+                                                fontSize: 'clamp(0.85rem, 2.2vw, 0.95rem)',
+                                                fontWeight: 700,
                                                 color: '#1e293b',
                                                 wordBreak: 'break-word',
                                             }}>
                                                 Expense Breakdown
                                             </h3>
-                                            <p style={{ 
-                                                fontSize: 'clamp(0.7rem, 1.6vw, 0.75rem)', 
-                                                color: '#94a3b8', 
-                                                marginTop: '3px' 
+                                            <p style={{
+                                                fontSize: 'clamp(0.7rem, 1.6vw, 0.75rem)',
+                                                color: '#94a3b8',
+                                                marginTop: '3px'
                                             }}>
                                                 By category • {selectedPeriodLabel}
                                             </p>
@@ -540,9 +540,9 @@ export default function Analytics() {
                                                     <PieChart>
                                                         <Pie
                                                             data={expensePie}
-                                                            cx="50%" 
+                                                            cx="50%"
                                                             cy="50%"
-                                                            innerRadius="45%" 
+                                                            innerRadius="45%"
                                                             outerRadius="75%"
                                                             paddingAngle={3}
                                                             dataKey="value"
@@ -556,35 +556,35 @@ export default function Analytics() {
                                                 </ResponsiveContainer>
                                             </div>
 
-                                            <div style={{ 
-                                                display: 'flex', 
-                                                flexDirection: 'column', 
-                                                gap: 'clamp(5px, 1.5vw, 7px)', 
+                                            <div style={{
+                                                display: 'flex',
+                                                flexDirection: 'column',
+                                                gap: 'clamp(5px, 1.5vw, 7px)',
                                                 marginTop: 'clamp(8px, 2vw, 12px)',
                                             }}>
                                                 {expensePie.slice(0, 6).map((item, i) => (
                                                     <div key={item.name} style={{
-                                                        display: 'flex', 
+                                                        display: 'flex',
                                                         alignItems: 'center',
                                                         justifyContent: 'space-between',
                                                         fontSize: 'clamp(0.7rem, 1.6vw, 0.78rem)',
                                                         gap: '8px',
                                                     }}>
-                                                        <div style={{ 
-                                                            display: 'flex', 
-                                                            alignItems: 'center', 
+                                                        <div style={{
+                                                            display: 'flex',
+                                                            alignItems: 'center',
                                                             gap: '8px',
                                                             minWidth: 0,
                                                             flex: 1,
                                                         }}>
                                                             <div style={{
-                                                                width: '8px', 
-                                                                height: '8px', 
+                                                                width: '8px',
+                                                                height: '8px',
                                                                 borderRadius: '50%',
                                                                 background: COLORS[i % COLORS.length],
                                                                 flexShrink: 0,
                                                             }} />
-                                                            <span style={{ 
+                                                            <span style={{
                                                                 color: '#64748b',
                                                                 overflow: 'hidden',
                                                                 textOverflow: 'ellipsis',
@@ -593,8 +593,8 @@ export default function Analytics() {
                                                                 {item.name}
                                                             </span>
                                                         </div>
-                                                        <span style={{ 
-                                                            color: '#1e293b', 
+                                                        <span style={{
+                                                            color: '#1e293b',
                                                             fontWeight: 700,
                                                             whiteSpace: 'nowrap',
                                                         }}>
@@ -607,12 +607,12 @@ export default function Analytics() {
                                     ) : (
                                         <div style={{
                                             height: 190,
-                                            display: 'flex', 
+                                            display: 'flex',
                                             flexDirection: 'column',
-                                            alignItems: 'center', 
+                                            alignItems: 'center',
                                             justifyContent: 'center',
-                                            color: '#94a3b8', 
-                                            fontSize: 'clamp(0.8rem, 2vw, 0.85rem)', 
+                                            color: '#94a3b8',
+                                            fontSize: 'clamp(0.8rem, 2vw, 0.85rem)',
                                             gap: '8px',
                                         }}>
                                             <Activity size={28} color="#e5e7eb" />
@@ -623,7 +623,7 @@ export default function Analytics() {
 
                                 {/* Balance Line Chart */}
                                 <div style={{
-                                    background: '#fff', 
+                                    background: '#fff',
                                     borderRadius: 'clamp(14px, 3vw, 16px)',
                                     padding: 'clamp(18px, 4vw, 22px) clamp(20px, 4vw, 24px)',
                                     border: '1px solid #e5e7eb',
@@ -631,18 +631,18 @@ export default function Analytics() {
                                     minWidth: 0,
                                 }}>
                                     <div style={{ marginBottom: 'clamp(12px, 3vw, 16px)' }}>
-                                        <h3 style={{ 
-                                            fontSize: 'clamp(0.85rem, 2.2vw, 0.95rem)', 
-                                            fontWeight: 700, 
+                                        <h3 style={{
+                                            fontSize: 'clamp(0.85rem, 2.2vw, 0.95rem)',
+                                            fontWeight: 700,
                                             color: '#1e293b',
                                             wordBreak: 'break-word',
                                         }}>
                                             Balance Over Time
                                         </h3>
-                                        <p style={{ 
-                                            fontSize: 'clamp(0.7rem, 1.6vw, 0.75rem)', 
-                                            color: '#94a3b8', 
-                                            marginTop: '3px' 
+                                        <p style={{
+                                            fontSize: 'clamp(0.7rem, 1.6vw, 0.75rem)',
+                                            color: '#94a3b8',
+                                            marginTop: '3px'
                                         }}>
                                             Running balance trend
                                         </p>
@@ -655,7 +655,7 @@ export default function Analytics() {
                                                     <XAxis
                                                         dataKey="date"
                                                         tick={{ fill: '#94a3b8', fontSize: 10 }}
-                                                        axisLine={false} 
+                                                        axisLine={false}
                                                         tickLine={false}
                                                         tickFormatter={d => {
                                                             try { return format(parseISO(d), 'dd MMM') } catch { return d }
@@ -664,7 +664,7 @@ export default function Analytics() {
                                                     />
                                                     <YAxis
                                                         tick={{ fill: '#94a3b8', fontSize: 11 }}
-                                                        axisLine={false} 
+                                                        axisLine={false}
                                                         tickLine={false}
                                                         tickFormatter={v => `${(v / 1000).toFixed(0)}k`}
                                                     />

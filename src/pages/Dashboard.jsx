@@ -358,82 +358,82 @@ export default function Dashboard() {
                             </div>
                             {/* Monthly Chart */}
                             <div style={{
-                                    background: '#fff',
-                                    borderRadius: 'clamp(14px, 3vw, 16px)',
-                                    padding: 'clamp(16px, 4vw, 20px) clamp(18px, 4.5vw, 24px)',
-                                    border: '1px solid #e5e7eb',
-                                    boxShadow: '0 1px 6px rgba(0,0,0,0.05)',
-                                    minWidth: 0,
+                                background: '#fff',
+                                borderRadius: 'clamp(14px, 3vw, 16px)',
+                                padding: 'clamp(16px, 4vw, 20px) clamp(18px, 4.5vw, 24px)',
+                                border: '1px solid #e5e7eb',
+                                boxShadow: '0 1px 6px rgba(0,0,0,0.05)',
+                                minWidth: 0,
+                            }}>
+                                <div style={{
+                                    display: 'flex',
+                                    justifyContent: 'space-between',
+                                    alignItems: 'center',
+                                    marginBottom: 'clamp(16px, 4vw, 20px)',
+                                    gap: '10px',
+                                    flexWrap: 'wrap',
                                 }}>
-                                    <div style={{
-                                        display: 'flex',
-                                        justifyContent: 'space-between',
-                                        alignItems: 'center',
-                                        marginBottom: 'clamp(16px, 4vw, 20px)',
-                                        gap: '10px',
-                                        flexWrap: 'wrap',
-                                    }}>
-                                        <div style={{ minWidth: 0, flex: '1 1 auto' }}>
-                                            <h3 style={{
-                                                fontSize: 'clamp(0.85rem, 2.2vw, 0.95rem)',
-                                                fontWeight: 700,
-                                                color: '#1e293b',
-                                                wordBreak: 'break-word',
-                                            }}>
-                                                Monthly Overview
-                                            </h3>
-                                            <p style={{
-                                                fontSize: 'clamp(0.7rem, 1.6vw, 0.75rem)',
-                                                color: '#94a3b8',
-                                                marginTop: 2
-                                            }}>
-                                                Income vs Expenses
-                                            </p>
-                                        </div>
-                                        <button
-                                            onClick={() => navigate('/analytics')}
-                                            style={{
-                                                fontSize: 'clamp(0.7rem, 1.6vw, 0.75rem)',
-                                                color: '#3b82f6',
-                                                background: '#eff6ff',
-                                                border: '1px solid #bfdbfe',
-                                                borderRadius: '8px',
-                                                padding: 'clamp(4px, 1vw, 5px) clamp(10px, 2.5vw, 12px)',
-                                                cursor: 'pointer',
-                                                fontWeight: 600,
-                                                whiteSpace: 'nowrap',
-                                            }}
-                                        >
-                                            Full Analytics →
-                                        </button>
-                                    </div>
-                                    {monthlyData.length > 0 ? (
-                                        <ResponsiveContainer width="100%" height={200}>
-                                            <BarChart data={monthlyData} barSize={14} barCategoryGap="30%">
-                                                <XAxis dataKey="month" tick={{ fill: '#94a3b8', fontSize: 11 }} axisLine={false} tickLine={false} />
-                                                <YAxis tick={{ fill: '#94a3b8', fontSize: 11 }} axisLine={false} tickLine={false}
-                                                    tickFormatter={v => (v / 1000).toFixed(0) + 'k'} />
-                                                <Tooltip content={<CustomTooltip />} cursor={{ fill: 'rgba(0,0,0,0.03)' }} />
-                                                <Bar dataKey="credit" name="Income" fill="#10b981" radius={[4, 4, 0, 0]} />
-                                                <Bar dataKey="debit" name="Expenses" fill="#ef4444" radius={[4, 4, 0, 0]} />
-                                            </BarChart>
-                                        </ResponsiveContainer>
-                                    ) : (
-                                        <div style={{
-                                            height: 200,
-                                            display: 'flex',
-                                            flexDirection: 'column',
-                                            alignItems: 'center',
-                                            justifyContent: 'center',
-                                            color: '#94a3b8',
-                                            fontSize: 'clamp(0.8rem, 2vw, 0.85rem)',
-                                            gap: 8,
+                                    <div style={{ minWidth: 0, flex: '1 1 auto' }}>
+                                        <h3 style={{
+                                            fontSize: 'clamp(0.85rem, 2.2vw, 0.95rem)',
+                                            fontWeight: 700,
+                                            color: '#1e293b',
+                                            wordBreak: 'break-word',
                                         }}>
-                                            <Activity size={28} color="#e5e7eb" />
-                                            No transactions yet
-                                        </div>
-                                    )}
+                                            Monthly Overview
+                                        </h3>
+                                        <p style={{
+                                            fontSize: 'clamp(0.7rem, 1.6vw, 0.75rem)',
+                                            color: '#94a3b8',
+                                            marginTop: 2
+                                        }}>
+                                            Income vs Expenses
+                                        </p>
+                                    </div>
+                                    <button
+                                        onClick={() => navigate('/analytics')}
+                                        style={{
+                                            fontSize: 'clamp(0.7rem, 1.6vw, 0.75rem)',
+                                            color: '#3b82f6',
+                                            background: '#eff6ff',
+                                            border: '1px solid #bfdbfe',
+                                            borderRadius: '8px',
+                                            padding: 'clamp(4px, 1vw, 5px) clamp(10px, 2.5vw, 12px)',
+                                            cursor: 'pointer',
+                                            fontWeight: 600,
+                                            whiteSpace: 'nowrap',
+                                        }}
+                                    >
+                                        Full Analytics →
+                                    </button>
                                 </div>
+                                {monthlyData.length > 0 ? (
+                                    <ResponsiveContainer width="100%" height={200}>
+                                        <BarChart data={monthlyData} barSize={14} barCategoryGap="30%">
+                                            <XAxis dataKey="month" tick={{ fill: '#94a3b8', fontSize: 11 }} axisLine={false} tickLine={false} />
+                                            <YAxis tick={{ fill: '#94a3b8', fontSize: 11 }} axisLine={false} tickLine={false}
+                                                tickFormatter={v => (v / 1000).toFixed(0) + 'k'} />
+                                            <Tooltip content={<CustomTooltip />} cursor={{ fill: 'rgba(0,0,0,0.03)' }} />
+                                            <Bar dataKey="credit" name="Income" fill="#10b981" radius={[4, 4, 0, 0]} />
+                                            <Bar dataKey="debit" name="Expenses" fill="#ef4444" radius={[4, 4, 0, 0]} />
+                                        </BarChart>
+                                    </ResponsiveContainer>
+                                ) : (
+                                    <div style={{
+                                        height: 200,
+                                        display: 'flex',
+                                        flexDirection: 'column',
+                                        alignItems: 'center',
+                                        justifyContent: 'center',
+                                        color: '#94a3b8',
+                                        fontSize: 'clamp(0.8rem, 2vw, 0.85rem)',
+                                        gap: 8,
+                                    }}>
+                                        <Activity size={28} color="#e5e7eb" />
+                                        No transactions yet
+                                    </div>
+                                )}
+                            </div>
 
                             {/* Recent Transactions */}
                             {transactions.length > 0 && (
