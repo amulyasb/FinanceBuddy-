@@ -159,9 +159,12 @@ export default function Subscription() {
     }
 
     return (
-        <div style={{ maxWidth: 1000, margin: '0 auto', width: '100%' }}>
+        <div
+            className="subscription-page"
+            style={{ maxWidth: 1000, margin: '0 auto', width: '100%', padding: '0 clamp(12px, 4vw, 20px) 24px', boxSizing: 'border-box' }}
+        >
             <div style={{ marginBottom: 32 }}>
-                <h1 style={{ fontSize: '1.8rem', fontWeight: 800, color: '#1e293b', marginBottom: 8 }}>
+                <h1 style={{ fontSize: 'clamp(1.35rem, 4.2vw, 1.8rem)', fontWeight: 800, color: '#1e293b', marginBottom: 8 }}>
                     Subscription Plans
                 </h1>
                 <p style={{ color: '#64748b', fontSize: '0.95rem' }}>
@@ -170,9 +173,8 @@ export default function Subscription() {
             </div>
 
             {(isActive || isPending || rejectedTierName) && (
-                <div style={{
+                <div className="subscription-status-grid" style={{
                     display: 'grid',
-                    gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))',
                     gap: 10,
                     marginBottom: 18,
                 }}>
@@ -220,7 +222,8 @@ export default function Subscription() {
                         </div>
                     )}
 
-                    {activeTierId !== "luxury" && rejectedTierName && (                        <div style={{
+                    {activeTierId !== 'luxury' && rejectedTierName && (
+                        <div style={{
                             background: '#fef2f2',
                             border: '1px solid #fca5a5',
                             borderRadius: 12,
@@ -243,10 +246,9 @@ export default function Subscription() {
                 </div>
             )}
 
-            <div style={{
+            <div className="subscription-tier-grid" style={{
                 display: 'grid',
-                gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
-                gap: 24,
+                gap: 12,
                 marginBottom: 32,
             }}>
                 {tiers.map((tier) => {
@@ -261,35 +263,35 @@ export default function Subscription() {
                                 background: isCurrent ? '#eff6ff' : '#fff',
                                 border: isCurrent ? '2px solid #3b82f6' : '1px solid #e5e7eb',
                                 borderRadius: 16,
-                                padding: 24,
+                                padding: 'clamp(12px, 3vw, 20px)',
                                 boxShadow: '0 4px 20px rgba(0,0,0,0.03)',
                                 display: 'flex',
                                 flexDirection: 'column',
                             }}
                         >
                             <div style={{ marginBottom: 12 }}>
-                                <h3 style={{ fontSize: '1.5rem', fontWeight: 800, color: '#1e293b', marginBottom: 4 }}>
+                                <h3 style={{ fontSize: 'clamp(1.2rem, 3.5vw, 1.5rem)', fontWeight: 800, color: '#1e293b', marginBottom: 4 }}>
                                     {tier.name}
                                 </h3>
-                                <p style={{ color: '#64748b', fontSize: '0.9rem' }}>
+                                <p style={{ color: '#64748b', fontSize: 'clamp(0.75rem, 2vw, 0.9rem)' }}>
                                     {tier.description}
                                 </p>
                             </div>
 
                             <div style={{ background: '#f8fafc', borderRadius: 12, padding: 16, marginBottom: 16, flexGrow: 1 }}>
-                                <div style={{ fontSize: '2rem', fontWeight: 800, color: '#1e293b', marginBottom: 4 }}>
+                                <div style={{ fontSize: 'clamp(1.2rem, 4vw, 1.8rem)', fontWeight: 800, color: '#1e293b', marginBottom: 4 }}>
                                     {tier.price}
                                 </div>
-                                <div style={{ fontSize: '0.85rem', color: '#64748b' }}>
+                                <div style={{ fontSize: 'clamp(0.7rem, 2vw, 0.85rem)', color: '#64748b' }}>
                                     One-time payment
                                 </div>
                             </div>
 
                             <div style={{ marginBottom: 16 }}>
-                                <div style={{ fontSize: '0.9rem', fontWeight: 600, color: '#1e293b', marginBottom: 8 }}>
+                                <div style={{ fontSize: 'clamp(0.8rem, 2vw, 0.9rem)', fontWeight: 600, color: '#1e293b', marginBottom: 8 }}>
                                     ✓ {tier.accounts} total accounts
                                 </div>
-                                <div style={{ fontSize: '0.9rem', color: '#64748b', lineHeight: 1.6 }}>
+                                <div style={{ fontSize: 'clamp(0.75rem, 2vw, 0.9rem)', color: '#64748b', lineHeight: 1.6 }}>
                                     Start with 1 free. Add {tier.accounts - 1} more after upgrade.
                                 </div>
                             </div>
@@ -321,31 +323,33 @@ export default function Subscription() {
                 <div style={{
                     background: '#fff',
                     borderRadius: 16,
-                    padding: 'clamp(24px, 5vw, 40px)',
+                    padding: 'clamp(12px, 3vw, 24px)',
                     border: '1px solid #e5e7eb',
                     boxShadow: '0 4px 20px rgba(0,0,0,0.03)',
                 }}>
-                    <h2 style={{ fontSize: '1.3rem', fontWeight: 700, color: '#1e293b', marginBottom: 16, textAlign: 'center' }}>
+                    <h2 style={{ fontSize: 'clamp(1rem, 3vw, 1.3rem)', fontWeight: 700, color: '#1e293b', marginBottom: 16, textAlign: 'center' }}>
                         {isActive ? 'Request Plan Upgrade' : 'Payment Method'}
                     </h2>
 
-                    <div style={{
+                    <div className="subscription-payment-grid" style={{
                         display: 'grid',
-                        gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
-                        gap: 16,
+                        gap: 10,
                         marginBottom: 24,
                     }}>
                         <div style={{
                             background: '#f8fafc',
                             border: selectedPaymentMethod === 'khalti' ? '2px solid #3b82f6' : '1px solid #e5e7eb',
                             borderRadius: 14,
-                            padding: 12,
+                            padding: 8,
                             cursor: 'pointer',
                         }}>
                             <div
                                 onClick={() => setSelectedPaymentMethod('khalti')}
                                 style={{
-                                    height: 360,
+                                    width: '100%',
+                                    aspectRatio: '1 / 1',
+                                    minHeight: 180,
+                                    maxHeight: 320,
                                     borderRadius: 10,
                                     overflow: 'hidden',
                                     background: '#fff',
@@ -387,13 +391,16 @@ export default function Subscription() {
                             background: '#f8fafc',
                             border: selectedPaymentMethod === 'esewa' ? '2px solid #3b82f6' : '1px solid #e5e7eb',
                             borderRadius: 14,
-                            padding: 12,
+                            padding: 8,
                             cursor: 'pointer',
                         }}>
                             <div
                                 onClick={() => setSelectedPaymentMethod('esewa')}
                                 style={{
-                                    height: 360,
+                                    width: '100%',
+                                    aspectRatio: '1 / 1',
+                                    minHeight: 180,
+                                    maxHeight: 320,
                                     borderRadius: 10,
                                     overflow: 'hidden',
                                     background: '#fff',
@@ -435,12 +442,12 @@ export default function Subscription() {
                         </div>
                     </div>
 
-                    <p style={{ color: '#64748b', fontSize: '0.9rem', marginBottom: 24, lineHeight: 1.5, textAlign: 'center' }}>
+                    <p style={{ color: '#64748b', fontSize: 'clamp(0.75rem, 2vw, 0.9rem)', marginBottom: 24, lineHeight: 1.5, textAlign: 'center' }}>
                         Scan the QR code for <strong>{getTierInfo(selectedTier).name}</strong> plan, complete payment, then click continue. An admin will verify and approve your request.
                     </p>
 
                     <div style={{ marginBottom: 18 }}>
-                        <label style={{ display: 'block', marginBottom: 8, color: '#334155', fontSize: '0.88rem', fontWeight: 600 }}>
+                        <label style={{ display: 'block', marginBottom: 8, color: '#334155', fontSize: 'clamp(0.75rem, 2vw, 0.88rem)', fontWeight: 600 }}>
                             Upload payment screenshot *
                         </label>
                         <input
@@ -455,9 +462,10 @@ export default function Subscription() {
                                 background: '#f8fafc',
                                 color: '#334155',
                                 fontSize: '0.85rem',
+                                boxSizing: 'border-box',
                             }}
                         />
-                        <div style={{ marginTop: 6, color: '#64748b', fontSize: '0.78rem' }}>
+                        <div style={{ marginTop: 6, color: '#64748b', fontSize: 'clamp(0.65rem, 1.5vw, 0.78rem)', wordBreak: 'break-word', overflowWrap: 'break-word' }}>
                             {paymentScreenshot ? `Selected file: ${paymentScreenshot.name}` : 'No screenshot selected'}
                         </div>
                     </div>
@@ -468,12 +476,13 @@ export default function Subscription() {
                         style={{
                             width: '100%',
                             padding: '14px 24px',
+                            boxSizing: 'border-box',
                             background: submitting ? '#93c5fd' : 'linear-gradient(135deg, #1e40af, #3b82f6)',
                             color: '#fff',
                             border: 'none',
                             borderRadius: 12,
                             fontWeight: 700,
-                            fontSize: '1rem',
+                            fontSize: 'clamp(0.85rem, 2.5vw, 1rem)',
                             cursor: submitting ? 'not-allowed' : 'pointer',
                             boxShadow: '0 4px 14px rgba(59,130,246,0.4)',
                             transition: 'transform 0.2s, box-shadow 0.2s',
@@ -493,6 +502,36 @@ export default function Subscription() {
                     </button>
                 </div>
             )}
+            <style>{`
+                .subscription-status-grid {
+                    grid-template-columns: repeat(3, minmax(0, 1fr));
+                }
+                .subscription-tier-grid {
+                    grid-template-columns: repeat(3, minmax(0, 1fr));
+                }
+                .subscription-payment-grid {
+                    grid-template-columns: repeat(2, minmax(0, 1fr));
+                }
+                @media (max-width: 1024px) {
+                    .subscription-status-grid {
+                        grid-template-columns: repeat(2, minmax(0, 1fr));
+                    }
+                    .subscription-tier-grid {
+                        grid-template-columns: repeat(2, minmax(0, 1fr));
+                    }
+                }
+                @media (max-width: 640px) {
+                    .subscription-page {
+                        padding-left: 0 !important;
+                        padding-right: 0 !important;
+                    }
+                    .subscription-status-grid,
+                    .subscription-tier-grid,
+                    .subscription-payment-grid {
+                        grid-template-columns: minmax(0, 1fr);
+                    }
+                }
+            `}</style>
         </div>
     )
 }

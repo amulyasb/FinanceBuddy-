@@ -146,7 +146,10 @@ export default function AdminSubscriptions() {
     }
 
     return (
-        <div style={{ maxWidth: 1200, margin: '0 auto', width: '100%' }}>
+        <div
+            className="admin-subscriptions-page"
+            style={{ maxWidth: 1200, margin: '0 auto', width: '100%', padding: '0 clamp(8px, 3vw, 16px)', boxSizing: 'border-box' }}
+        >
             <div style={{ marginBottom: 28 }}>
                 <h1 style={{ fontSize: '1.8rem', fontWeight: 800, color: '#1e293b', marginBottom: 8 }}>
                     Subscription Analysis
@@ -156,7 +159,7 @@ export default function AdminSubscriptions() {
                 </p>
             </div>
 
-            <div style={{
+            <div className="admin-subscriptions-stats" style={{
                 display: 'grid',
                 gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))',
                 gap: 12,
@@ -210,7 +213,7 @@ export default function AdminSubscriptions() {
                     <span style={{ fontWeight: 700, color: '#1e293b' }}>Subscription Requests</span>
                 </div>
 
-                <div style={{ overflowX: 'auto' }}>
+                <div className="admin-subscriptions-table-wrap" style={{ overflowX: 'auto' }}>
                     <table style={{ width: '100%', borderCollapse: 'collapse', minWidth: 760 }}>
                         <thead>
                             <tr style={{ background: '#f8fafc' }}>
@@ -346,6 +349,103 @@ export default function AdminSubscriptions() {
                         </tbody>
                     </table>
                 </div>
+                <div className="admin-subscriptions-mobile-list" style={{ display: 'none', padding: 12, gap: 10 }}>
+                    {rows.map((row) => {
+                        const statusColor = getStatusColor(row.status)
+                        const rowKey = row.subscriptionId || `${row.userId}-mobile-none`
+                        return (
+                            <div
+                                key={rowKey}
+                                style={{
+                                    border: '1px solid #e2e8f0',
+                                    borderRadius: 12,
+                                    padding: 12,
+                                    background: '#fff',
+                                }}
+                            >
+                                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'start', gap: 8, marginBottom: 8 }}>
+                                    <div style={{ minWidth: 0 }}>
+                                        <div style={{ color: '#1e293b', fontWeight: 700, fontSize: '0.88rem', overflowWrap: 'anywhere' }}>{row.userName}</div>
+                                        <div style={{ color: '#64748b', fontSize: '0.75rem', overflowWrap: 'anywhere' }}>{row.userEmail}</div>
+                                    </div>
+                                    <span style={{
+                                        padding: '4px 10px',
+                                        borderRadius: 999,
+                                        background: statusColor.bg,
+                                        color: statusColor.text,
+                                        fontSize: '0.72rem',
+                                        fontWeight: 700,
+                                        textTransform: 'capitalize',
+                                        flexShrink: 0,
+                                    }}>
+                                        {row.status}
+                                    </span>
+                                </div>
+                                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, minmax(0, 1fr))', gap: 8, marginBottom: 10 }}>
+                                    <div style={{ color: '#64748b', fontSize: '0.72rem' }}>Accounts: <span style={{ color: '#0f172a', fontWeight: 700 }}>{row.accountCount}</span></div>
+                                    <div style={{ color: '#64748b', fontSize: '0.72rem' }}>Tier: <span style={{ color: '#0f172a', fontWeight: 700, textTransform: 'capitalize' }}>{row.tier}</span></div>
+                                    <div style={{ color: '#64748b', fontSize: '0.72rem' }}>Payment: <span style={{ color: '#0f172a', fontWeight: 700 }}>{row.paymentMethod === 'none' ? '-' : row.paymentMethod === 'esewa' ? 'eSewa' : 'Khalti'}</span></div>
+                                    <div style={{ color: '#64748b', fontSize: '0.72rem' }}>Time: <span style={{ color: '#0f172a', fontWeight: 700 }}>{row.updatedAt ? new Date(row.updatedAt).toLocaleDateString() : '-'}</span></div>
+                                </div>
+                                <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+                                    {row.tier !== 'none' && (
+                                        <button
+                                            onClick={() => setSelectedDetail(row)}
+                                            style={{
+                                                border: 'none',
+                                                borderRadius: 8,
+                                                padding: '6px 10px',
+                                                cursor: 'pointer',
+                                                background: '#e2e8f0',
+                                                color: '#1e293b',
+                                                fontSize: '0.72rem',
+                                                fontWeight: 700,
+                                            }}
+                                        >
+                                            View Detail
+                                        </button>
+                                    )}
+                                    {row.status === 'pending' && row.subscriptionId && (
+                                        <>
+                                            <button
+                                                onClick={() => handleStatusChange(row.subscriptionId, 'active')}
+                                                disabled={updatingId === row.subscriptionId}
+                                                style={{
+                                                    border: 'none',
+                                                    borderRadius: 8,
+                                                    padding: '6px 10px',
+                                                    cursor: updatingId === row.subscriptionId ? 'not-allowed' : 'pointer',
+                                                    background: '#16a34a',
+                                                    color: '#fff',
+                                                    fontSize: '0.72rem',
+                                                    fontWeight: 700,
+                                                }}
+                                            >
+                                                Done
+                                            </button>
+                                            <button
+                                                onClick={() => handleStatusChange(row.subscriptionId, 'rejected')}
+                                                disabled={updatingId === row.subscriptionId}
+                                                style={{
+                                                    border: 'none',
+                                                    borderRadius: 8,
+                                                    padding: '6px 10px',
+                                                    cursor: updatingId === row.subscriptionId ? 'not-allowed' : 'pointer',
+                                                    background: '#dc2626',
+                                                    color: '#fff',
+                                                    fontSize: '0.72rem',
+                                                    fontWeight: 700,
+                                                }}
+                                            >
+                                                Reject
+                                            </button>
+                                        </>
+                                    )}
+                                </div>
+                            </div>
+                        )
+                    })}
+                </div>
             </div>
 
             {selectedDetail && (
@@ -394,7 +494,7 @@ export default function AdminSubscriptions() {
                             </button>
                         </div>
 
-                        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, minmax(0, 1fr))', gap: 12, marginBottom: 18 }}>
+                        <div className="admin-subscriptions-detail-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(2, minmax(0, 1fr))', gap: 12, marginBottom: 18 }}>
                             <div style={{ color: '#334155' }}><strong style={{ color: '#0f172a' }}>User:</strong> {selectedDetail.userName}</div>
                             <div style={{ color: '#334155' }}><strong style={{ color: '#0f172a' }}>Email:</strong> {selectedDetail.userEmail}</div>
                             <div style={{ color: '#334155' }}><strong style={{ color: '#0f172a' }}>Tier:</strong> <span style={{ textTransform: 'capitalize' }}>{selectedDetail.tier}</span></div>
@@ -423,6 +523,31 @@ export default function AdminSubscriptions() {
                     </div>
                 </div>
             )}
+            <style>{`
+                @media (max-width: 900px) {
+                    .admin-subscriptions-stats {
+                        grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+                    }
+                }
+                @media (max-width: 640px) {
+                    .admin-subscriptions-page {
+                        padding-left: 0 !important;
+                        padding-right: 0 !important;
+                    }
+                    .admin-subscriptions-stats {
+                        grid-template-columns: minmax(0, 1fr) !important;
+                    }
+                    .admin-subscriptions-table-wrap {
+                        display: none;
+                    }
+                    .admin-subscriptions-mobile-list {
+                        display: grid !important;
+                    }
+                    .admin-subscriptions-detail-grid {
+                        grid-template-columns: minmax(0, 1fr) !important;
+                    }
+                }
+            `}</style>
         </div>
     )
 }
