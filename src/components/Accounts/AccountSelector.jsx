@@ -7,7 +7,7 @@ import { formatCurrency } from '../../lib/utils'
 import { Plus, Wallet, Settings, Trash2, AlertTriangle, X } from 'lucide-react'
 
 export default function AccountSelector() {
-    const { accounts, loading, fetchAccounts, deleteAccount, updateAccount } = useAccounts()
+    const { accounts, loading, fetchAccounts, deleteAccount, updateAccount, createAccount, maxAllowed, isAdmin } = useAccounts()
     const { selectedAccount, setSelectedAccount, refreshTrigger } = useAccount()
     const [showForm, setShowForm] = useState(false)
     const [editAccount, setEditAccount] = useState(null)
@@ -43,6 +43,14 @@ export default function AccountSelector() {
         setShowThreshold(null)
     }
 
+    const handleCreateAccount = async (payload) => {
+        const result = await createAccount(payload)
+        if (!result.error) {
+            await fetchAccounts()
+        }
+        return result
+    }
+
     const gradients = [
         'linear-gradient(135deg, #3b82f6, #6366f1)',
         'linear-gradient(135deg, #10b981, #059669)',
@@ -63,10 +71,10 @@ export default function AccountSelector() {
                         My Accounts
                     </h2>
                     <p style={{ fontSize: '0.72rem', color: '#94a3b8', marginTop: 2 }}>
-                        {accounts.length}/3 accounts
+                        {isAdmin ? `${accounts.length}/Unlimited accounts` : `${accounts.length}/${maxAllowed} accounts`}
                     </p>
                 </div>
-                {accounts.length < 3 && (
+                {accounts.length < maxAllowed && (
                     <button
                         onClick={() => { setEditAccount(null); setShowForm(true) }}
                         style={{
@@ -231,9 +239,11 @@ export default function AccountSelector() {
             {showForm && createPortal(
                 <AccountForm
                     onClose={() => setShowForm(false)}
-                    onSuccess={() => { fetchAccounts(); setShowForm(false) }}
+                    onSuccess={() => { setShowForm(false) }}
+                    onCreateAccount={handleCreateAccount}
                     existing={editAccount}
                     currentCount={accounts.length}
+                    maxAllowed={maxAllowed}
                 />,
                 document.body
             )}

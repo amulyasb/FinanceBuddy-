@@ -3,6 +3,13 @@ import { supabase } from '../lib/supabase'
 
 const AuthContext = createContext({})
 
+const isTruthyAdmin = (value) => (
+    value === true ||
+    value === 'true' ||
+    value === 1 ||
+    value === '1'
+)
+
 export function AuthProvider({ children }) {
     const [user, setUser] = useState(null)
     const [isAuthenticated, setIsAuthenticated] = useState(false)
@@ -94,7 +101,8 @@ export function AuthProvider({ children }) {
                 password,
                 options: {
                     data: {
-                        full_name: fullName
+                        full_name: fullName,
+                        isadmin: false,
                     }
                 }
             });
@@ -117,15 +125,30 @@ export function AuthProvider({ children }) {
         }
     };
 
+    const updateUser = async (attributes) => {
+        try {
+            const { data, error } = await supabase.auth.updateUser(attributes);
+            if (data?.user) {
+                setUser(data.user);
+            }
+            return { data, error };
+        } catch (error) {
+            return { data: null, error: { message: error.message } };
+        }
+    };
+
     return (
+        // Support either isadmin or is_admin metadata key.
         <AuthContext.Provider value={{ 
             user, 
             isAuthenticated, 
+            isAdmin: isTruthyAdmin(user?.user_metadata?.isadmin) || isTruthyAdmin(user?.user_metadata?.is_admin),
             login, 
             logout,
-            signIn, // Add signIn method
-            signUp, // Add signUp method
-            loading // Add loading to context value
+            signIn, 
+            signUp, 
+            updateUser,
+            loading 
         }}>
             {children}
         </AuthContext.Provider>
