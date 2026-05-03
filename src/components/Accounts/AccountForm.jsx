@@ -1,10 +1,8 @@
 import { useEffect, useState } from 'react'
-import { useAccounts } from '../../hooks/useAccounts'
 import toast from 'react-hot-toast'
 import { X, Wallet, DollarSign, AlertTriangle } from 'lucide-react'
 
-export default function AccountForm({ onClose, onSuccess, currentCount }) {
-    const { createAccount } = useAccounts()
+export default function AccountForm({ onClose, onSuccess, currentCount, maxAllowed, onCreateAccount }) {
     const [loading, setLoading] = useState(false)
     const [form, setForm] = useState({
         account_name: '',
@@ -16,14 +14,14 @@ export default function AccountForm({ onClose, onSuccess, currentCount }) {
 
     const handleSubmit = async (e) => {
         e.preventDefault()
-        if (currentCount >= 3) { toast.error('Maximum 3 accounts allowed.'); return }
+        if (Number.isFinite(maxAllowed) && currentCount >= maxAllowed) { toast.error(`Account limit reached (${maxAllowed}).`); return }
         setLoading(true)
         const payload = {
             account_name: form.account_name.trim(),
             opening_balance: parseFloat(form.opening_balance) || 0,
             min_balance_threshold: parseFloat(form.min_balance_threshold) || 0,
         }
-        const { error } = await createAccount(payload)
+        const { error } = await onCreateAccount(payload)
         if (error) toast.error(error.message)
         else { toast.success('Account created!'); onSuccess() }
         setLoading(false)
@@ -70,7 +68,9 @@ export default function AccountForm({ onClose, onSuccess, currentCount }) {
                                 New Account
                             </h3>
                             <p style={{ fontSize: '0.78rem', color: '#94a3b8', marginTop: 2 }}>
-                                {3 - currentCount} slot{3 - currentCount !== 1 ? 's' : ''} remaining
+                                {Number.isFinite(maxAllowed)
+                                    ? `${Math.max(0, maxAllowed - currentCount)} slot${Math.max(0, maxAllowed - currentCount) !== 1 ? 's' : ''} remaining`
+                                    : 'Unlimited slots'}
                             </p>
                         </div>
                     </div>

@@ -2,21 +2,29 @@ import { NavLink } from 'react-router-dom'
 import { useAuth } from '../../hooks/useAuth'
 import {
     LayoutDashboard, ArrowLeftRight, FileText, BarChart3,
-    Tag, Wallet, LogOut, X
+    Tag, Wallet, LogOut, X, ShieldCheck, CreditCard
 } from 'lucide-react'
 import toast from 'react-hot-toast'
 import { supabase } from '../../lib/supabase'
 
-const navItems = [
+const baseNavItems = [
     { to: '/', label: 'Dashboard', icon: LayoutDashboard },
     { to: '/transactions', label: 'Transactions', icon: ArrowLeftRight },
     { to: '/statements', label: 'Statements', icon: FileText },
     { to: '/analytics', label: 'Analytics', icon: BarChart3 },
     { to: '/categories', label: 'Categories', icon: Tag },
+    { to: '/subscription', label: 'Subscription', icon: CreditCard },
 ]
 
 export default function Sidebar({ isOpen, onClose }) {
-    const { user } = useAuth()
+    const { user, isAdmin } = useAuth()
+
+    const navItems = isAdmin
+        ? [
+            ...baseNavItems.filter((item) => item.to !== '/subscription'),
+            { to: '/admin-subscriptions', label: 'Subscriptions', icon: ShieldCheck },
+        ]
+        : baseNavItems
 
     const displayName = user?.user_metadata?.full_name || user?.email?.split('@')[0] || 'User'
     const email = user?.email || ''

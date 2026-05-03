@@ -59,6 +59,21 @@ CREATE TABLE IF NOT EXISTS public.statements (
   created_at TIMESTAMPTZ DEFAULT NOW()
 );
 
+-- --------------------------
+-- SUBSCRIPTIONS TABLE
+-- --------------------------
+CREATE TABLE IF NOT EXISTS public.subscriptions (
+  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  user_id UUID REFERENCES auth.users(id) ON DELETE CASCADE NOT NULL,
+  user_email TEXT NOT NULL,
+  user_name TEXT,
+  status TEXT NOT NULL DEFAULT 'pending' CHECK (status IN ('pending', 'active', 'rejected')),
+  tier TEXT NOT NULL DEFAULT 'pro' CHECK (tier IN ('pro', 'vip', 'luxury')),
+  payment_method TEXT NOT NULL DEFAULT 'khalti' CHECK (payment_method IN ('khalti', 'esewa')),
+  payment_screenshot_url TEXT,
+  created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
 -- ============================================================
 -- ROW LEVEL SECURITY
 -- ============================================================
@@ -67,10 +82,45 @@ ALTER TABLE public.accounts ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.categories ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.transactions ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.statements ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.subscriptions ENABLE ROW LEVEL SECURITY;
 
 -- ACCOUNTS POLICIES
-CREATE POLICY "accounts_select" ON public.accounts FOR SELECT USING (auth.uid() = user_id);
-CREATE POLICY "accounts_insert" ON public.accounts FOR INSERT WITH CHECK (auth.uid() = user_id);
+CREATE POLICY "accounts_select" ON public.accounts FOR SELECT USING (
+  auth.uid() = user_id
+  OR coalesce((auth.jwt() -> 'user_metadata' ->> 'isadmin')::boolean, FALSE) = TRUE
+  OR coalesce((auth.jwt() -> 'user_metadata' ->> 'is_admin')::boolean, FALSE) = TRUE
+);
+CREATE POLICY "accounts_insert" ON public.accounts FOR INSERT WITH CHECK (
+  auth.uid() = user_id
+  AND (
+    coalesce((auth.jwt() -> 'user_metadata' ->> 'isadmin')::boolean, FALSE) = TRUE
+    OR coalesce((auth.jwt() -> 'user_metadata' ->> 'is_admin')::boolean, FALSE) = TRUE
+    OR (
+      (
+        SELECT COUNT(*)
+        FROM public.accounts a
+        WHERE a.user_id = auth.uid()
+      ) < COALESCE((
+        SELECT CASE s.tier
+          WHEN 'luxury' THEN 8
+          WHEN 'vip' THEN 5
+          WHEN 'pro' THEN 3
+          ELSE 1
+        END
+        FROM public.subscriptions s
+        WHERE s.user_id = auth.uid()
+          AND s.status = 'active'
+        ORDER BY CASE s.tier
+          WHEN 'luxury' THEN 3
+          WHEN 'vip' THEN 2
+          WHEN 'pro' THEN 1
+          ELSE 0
+        END DESC
+        LIMIT 1
+      ), 1)
+    )
+  )
+);
 CREATE POLICY "accounts_update" ON public.accounts FOR UPDATE USING (auth.uid() = user_id);
 CREATE POLICY "accounts_delete" ON public.accounts FOR DELETE USING (auth.uid() = user_id);
 
@@ -91,6 +141,22 @@ CREATE POLICY "statements_select" ON public.statements FOR SELECT USING (auth.ui
 CREATE POLICY "statements_insert" ON public.statements FOR INSERT WITH CHECK (auth.uid() = user_id);
 CREATE POLICY "statements_update" ON public.statements FOR UPDATE USING (auth.uid() = user_id);
 CREATE POLICY "statements_delete" ON public.statements FOR DELETE USING (auth.uid() = user_id);
+
+-- SUBSCRIPTIONS POLICIES
+CREATE POLICY "subscriptions_select" ON public.subscriptions FOR SELECT USING (
+  auth.uid() = user_id
+  OR coalesce((auth.jwt() -> 'user_metadata' ->> 'isadmin')::boolean, FALSE) = TRUE
+  OR coalesce((auth.jwt() -> 'user_metadata' ->> 'is_admin')::boolean, FALSE) = TRUE
+);
+CREATE POLICY "subscriptions_insert" ON public.subscriptions FOR INSERT WITH CHECK (auth.uid() = user_id);
+CREATE POLICY "subscriptions_update" ON public.subscriptions FOR UPDATE USING (
+  coalesce((auth.jwt() -> 'user_metadata' ->> 'isadmin')::boolean, FALSE) = TRUE
+  OR coalesce((auth.jwt() -> 'user_metadata' ->> 'is_admin')::boolean, FALSE) = TRUE
+);
+CREATE POLICY "subscriptions_delete" ON public.subscriptions FOR DELETE USING (
+  coalesce((auth.jwt() -> 'user_metadata' ->> 'isadmin')::boolean, FALSE) = TRUE
+  OR coalesce((auth.jwt() -> 'user_metadata' ->> 'is_admin')::boolean, FALSE) = TRUE
+);
 
 -- ============================================================
 -- SEED DEFAULT CATEGORIES

@@ -10,6 +10,9 @@ import Transactions from './pages/Transactions'
 import Analytics from './pages/Analytics'
 import Statements from './pages/Statements'
 import Categories from './pages/Categories'
+import Profile from './pages/Profile'
+import AdminSubscriptions from './pages/AdminSubscriptions'
+import Subscription from './pages/Subscription'
 
 export default function App() {
     return (
@@ -50,6 +53,9 @@ export default function App() {
                             <Route path="analytics" element={<Analytics />} />
                             <Route path="statements" element={<Statements />} />
                             <Route path="categories" element={<Categories />} />
+                            <Route path="subscription" element={<Subscription />} />
+                            <Route path="profile" element={<Profile />} />
+                            <Route path="admin-subscriptions" element={<AdminSubscriptions />} />
                         </Route>
                         <Route path="*" element={<Navigate to="/" replace />} />
                     </Routes>

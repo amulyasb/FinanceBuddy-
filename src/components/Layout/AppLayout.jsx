@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Outlet } from 'react-router-dom'
+import { Outlet, Link } from 'react-router-dom'
 import Sidebar from './Sidebar'
 import { Menu, Wallet, Bell } from 'lucide-react'
 import { useAuth } from '../../hooks/useAuth'
@@ -81,15 +81,17 @@ export default function AppLayout() {
                         </span>
                     </div>
 
-                    <div style={{
-                        width: 34, height: 34, borderRadius: '50%',
-                        background: 'linear-gradient(135deg, #1e40af, #3b82f6)',
-                        display: 'flex', alignItems: 'center', justifyContent: 'center',
-                        fontSize: '0.7rem', fontWeight: 800, color: 'white',
-                        boxShadow: '0 2px 6px rgba(59,130,246,0.3)',
-                    }}>
-                        {displayName.slice(0, 2).toUpperCase()}
-                    </div>
+                    <Link to="/profile" style={{ textDecoration: 'none' }}>
+                        <div style={{
+                            width: 34, height: 34, borderRadius: '50%',
+                            background: 'linear-gradient(135deg, #1e40af, #3b82f6)',
+                            display: 'flex', alignItems: 'center', justifyContent: 'center',
+                            fontSize: '0.7rem', fontWeight: 800, color: 'white',
+                            boxShadow: '0 2px 6px rgba(59,130,246,0.3)',
+                        }}>
+                            {displayName.slice(0, 2).toUpperCase()}
+                        </div>
+                    </Link>
                 </header>
 
                 {/* Desktop Top Bar */}
@@ -121,29 +123,36 @@ export default function AppLayout() {
                         background: '#e5e7eb', margin: '0 4px',
                     }} />
 
-                    <div style={{
-                        display: 'flex', alignItems: 'center', gap: 8,
-                        padding: '6px 12px',
-                        background: '#f8fafc',
-                        border: '1px solid #e5e7eb',
-                        borderRadius: 10,
-                    }}>
+                    <Link to="/profile" style={{ textDecoration: 'none' }}>
                         <div style={{
-                            width: 28, height: 28, borderRadius: '50%',
-                            background: 'linear-gradient(135deg, #1e40af, #3b82f6)',
-                            display: 'flex', alignItems: 'center', justifyContent: 'center',
-                            fontSize: '0.65rem', fontWeight: 800, color: 'white',
-                            flexShrink: 0,
-                        }}>
-                            {displayName.slice(0, 2).toUpperCase()}
+                            display: 'flex', alignItems: 'center', gap: 8,
+                            padding: '6px 12px',
+                            background: '#f8fafc',
+                            border: '1px solid #e5e7eb',
+                            borderRadius: 10,
+                            cursor: 'pointer',
+                            transition: 'all 0.2s ease',
+                        }}
+                        onMouseEnter={e => e.currentTarget.style.background = '#f1f5f9'}
+                        onMouseLeave={e => e.currentTarget.style.background = '#f8fafc'}
+                        >
+                            <div style={{
+                                width: 28, height: 28, borderRadius: '50%',
+                                background: 'linear-gradient(135deg, #1e40af, #3b82f6)',
+                                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                                fontSize: '0.65rem', fontWeight: 800, color: 'white',
+                                flexShrink: 0,
+                            }}>
+                                {displayName.slice(0, 2).toUpperCase()}
+                            </div>
+                            <span style={{
+                                fontSize: '0.8rem', fontWeight: 600,
+                                color: '#1e293b',
+                            }}>
+                                {displayName}
+                            </span>
                         </div>
-                        <span style={{
-                            fontSize: '0.8rem', fontWeight: 600,
-                            color: '#1e293b',
-                        }}>
-                            {displayName}
-                        </span>
-                    </div>
+                    </Link>
                 </header>
 
                 {/* Page Content */}
